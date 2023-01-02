@@ -11,9 +11,9 @@ class Mode():
     def select(self):
         n = input(f'Ввод прибыли (1)\nСмотреть график (2)): ')
         if n == '1':
-            how_much = int(input('Дат много?: Да (1), Нет (0): '))
+            how_much = int(input('Дата одна?: Нет (1), Да (0): '))
             if not how_much:
-                self.ad.adding_data()
+                self.ad.add_one_data()
             else:
                 self.ad.add_many_data()
         elif n == '2':
