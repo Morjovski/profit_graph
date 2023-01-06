@@ -1,12 +1,13 @@
 import json
 import os
 import datetime
-from colorama import init, Fore, Style
+import colorama
+from colorama import Fore, Style
 
 class AddData():
     
-    def __init__(self, m):
-        init(convert=True)
+    def __init__(self):
+        colorama.init(convert=True)
         self.fn = 'data.json'
 
     def add_one_data(self):
