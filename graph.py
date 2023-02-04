@@ -2,59 +2,15 @@ import matplotlib.pyplot as plt
 import numpy as np
 import datetime
 import json
-from open_file import OpenDataFile
+from create_data import CreateData
 
 
-class Graph:
+class Graph(CreateData):
 
     def __init__(self):
-        with open('data.json') as f:
-            self.file_data = json.load(f)
+        super().__init__()
         plt.style.use('_mpl-gallery')
-        self.date = []
-        self.profit_cash = []
-        self.profit_cashless = []
-        self.profit = []
-        self.purchases = []
-        self.overall_sum = 0
 
-    def take_period(self, *periods):
-        try:
-            self.start_period = periods[0]
-            self.end_period = periods[1]
-            self.per_first = ['0' + str(i) if len(str(i)) == 0 else str(i) for i in range(1, 32)]
-            self.graph_period_start = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
-            self.graph_period_end = datetime.date(int(periods[1][:4]), int(periods[1][5:7]), 1)
-        except ValueError:
-            self.graph_period_end = datetime.date(1970, 1, 1)
-        except IndexError:
-            self.graph_period_end = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
-
-    def create_data(self, per, overall, mode):
-        self.overall = overall
-        self.mode = mode
-        # make data
-        if self.overall:
-            if self.mode:
-                for purchases in self.file_data['data']:
-                    if per in purchases['day']:
-                        self.date.append(purchases['day'])
-                        self.overall_sum += purchases['purchases']
-                        self.purchases.append(self.overall_sum)
-            else:
-                for profit in self.file_data['data']:
-                    if per in profit['day']:
-                        self.date.append(profit['day'])
-                        self.overall_sum += profit['cash'] + profit['cashless']
-                        self.profit.append(round(self.overall_sum, 2))
-        else:
-            for date in self.file_data['data']:
-                if per in date['day']:
-                    self.date.append(date['day'])
-                    self.profit_cash.append(date['cash'])
-                    self.profit_cashless.append(date['cashless'])
-                    self.profit.append(round(date['cash'] + date['cashless'], 1))
-                    self.purchases.append(date['purchases'])
 
     def create_graph(self, pur_or_pro):
         # plot
@@ -124,32 +80,3 @@ class Graph:
         else:
             fig.savefig(f"graphs\profit_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
         plt.show()
-
-    def equalization(self, period, mode, overall):
-        mode_list = []
-        if overall:
-            overall_sum = 0
-            if not mode:
-                for gain in self.file_data['data']:
-                    if period in gain['day']:
-                        overall_sum += gain['cash'] + gain['cashless']
-                        mode_list.append(overall_sum)
-            else:
-                for purchase in self.file_data['data']:
-                    if period in purchase['day']:
-                        overall_sum += purchase['purchases']
-                        mode_list.append(overall_sum)
-        else:
-            if not mode:
-                for gain in self.file_data['data']:
-                    if period in gain['day']:
-                        mode_list.append(gain['cash'] + gain['cashless'])
-            else:
-                for purchase in self.file_data['data']:
-                    if period in purchase['day']:
-                        mode_list.append(purchase['purchases'])
-
-        for i in range(len(mode_list), 31):
-            mode_list.append(0)
-
-        return mode_list

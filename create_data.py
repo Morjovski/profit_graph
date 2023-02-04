@@ -30,15 +30,7 @@ class CreateData:
         self.overall = overall
         self.mode = mode
         # make data
-        if per and not self.overall:
-            for date in self.file_data['data']:
-                if per in date['day']:
-                    self.date.append(date['day'])
-                    self.profit_cash.append(date['cash'])
-                    self.profit_cashless.append(date['cashless'])
-                    self.profit.append(round(date['cash'] + date['cashless'], 1))
-                    self.purchases.append(date['purchases'])
-        elif per and self.overall:
+        if self.overall:
             if self.mode:
                 for purchases in self.file_data['data']:
                     if per in purchases['day']:
@@ -50,18 +42,41 @@ class CreateData:
                     if per in profit['day']:
                         self.date.append(profit['day'])
                         self.overall_sum += profit['cash'] + profit['cashless']
-                        self.profit.append(round(self.overall_sum, 2))                        
+                        self.profit.append(round(self.overall_sum, 2))
         else:
-            self.date = [date['day'] for date in self.file_data['data']]
-            self.profit = [profit['cash'] + profit['cashless'] for profit in self.file_data['data']]
-            self.purchases = [purchases['purchases'] for purchases in self.file_data['data']]
+            for date in self.file_data['data']:
+                if per in date['day']:
+                    self.date.append(date['day'])
+                    self.profit_cash.append(date['cash'])
+                    self.profit_cashless.append(date['cashless'])
+                    self.profit.append(round(date['cash'] + date['cashless'], 1))
+                    self.purchases.append(date['purchases'])
 
-    
-    def equalization(self, period):
-        profit_list = []
-        for gain in self.file_data['data']:
-            if period in gain['day']:
-                profit_list.append(gain['cash'] + gain['cashless'])
-        for i in range(len(self.profit), 31):
-            self.profit.append(0)
-        return self.profit
+    def equalization(self, period, mode, overall):
+        mode_list = []
+        if overall:
+            overall_sum = 0
+            if mode:
+                for purchase in self.file_data['data']:
+                    if period in purchase['day']:
+                        overall_sum += purchase['purchases']
+                        mode_list.append(overall_sum)
+            else:
+                for gain in self.file_data['data']:
+                    if period in gain['day']:
+                        overall_sum += gain['cash'] + gain['cashless']
+                        mode_list.append(overall_sum)
+        else:
+            if mode:
+                for purchase in self.file_data['data']:
+                    if period in purchase['day']:
+                        mode_list.append(purchase['purchases'])
+            else:
+                for gain in self.file_data['data']:
+                    if period in gain['day']:
+                        mode_list.append(gain['cash'] + gain['cashless'])
+                        
+        for i in range(len(mode_list), 31):
+            mode_list.append(0)
+
+        return mode_list
