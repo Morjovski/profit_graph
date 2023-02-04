@@ -15,6 +15,7 @@ class CreateData:
         self.overall_sum = 0
 
     def take_period(self, *periods):
+        '''Optimise dates for next use'''
         try:
             self.start_period = periods[0]
             self.end_period = periods[1]
@@ -27,9 +28,9 @@ class CreateData:
             self.graph_period_end = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
 
     def create_data(self, per, overall, mode):
+        '''Create data for create_graph bar'''
         self.overall = overall
         self.mode = mode
-        # make data
         if self.overall:
             if self.mode:
                 for purchases in self.file_data['data']:
@@ -53,6 +54,7 @@ class CreateData:
                     self.purchases.append(date['purchases'])
 
     def equalization(self, period, mode, overall):
+        '''Create data for create_graph_bar'''
         mode_list = []
         if overall:
             overall_sum = 0
@@ -75,7 +77,7 @@ class CreateData:
                 for gain in self.file_data['data']:
                     if period in gain['day']:
                         mode_list.append(gain['cash'] + gain['cashless'])
-                        
+        '''Generates missing dates if days in month < 31'''
         for i in range(len(mode_list), 31):
             mode_list.append(0)
 

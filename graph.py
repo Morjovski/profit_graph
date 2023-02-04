@@ -13,6 +13,7 @@ class Graph(CreateData):
 
 
     def create_graph(self, pur_or_pro):
+        '''Create one period graph by days'''
         # plot
         fig, ax = plt.subplots()
         fig.set_size_inches(10, 8)
@@ -38,7 +39,7 @@ class Graph(CreateData):
         plt.show()
 
     def create_graph_bar(self, mode, overall):
-
+        '''Compare two periods by grouped bar chart'''
         start_period = self.equalization(self.start_period, mode, overall)
         end_period = self.equalization(self.end_period, mode, overall)
         max_value = max(max(start_period), max(end_period))
