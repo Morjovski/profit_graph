@@ -3,3 +3,5 @@ plan.txt
 test.py
 __pycache__/
 graphs/
+.idea/
+open_file.py
