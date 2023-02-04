@@ -1,6 +1,7 @@
 # Запихнуть сюда метод take_period, create_data и equalization из файла graph.py
 import json
 import datetime
+from statistics import mean
 
 class CreateData:
 
@@ -82,3 +83,7 @@ class CreateData:
             mode_list.append(0)
 
         return mode_list
+
+
+    def average(self, info):
+        return mean(info)

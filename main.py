@@ -1,6 +1,7 @@
 from add_data import AddData
 from graph import Graph
 from create_data import CreateData
+from average import Average
 
 
 class Mode:
@@ -9,6 +10,7 @@ class Mode:
         self.ad = AddData()
         self.cd = CreateData()
         self.g = Graph()
+        self.avg = Average()
 
     def select(self):
         n = input(f'Ввод прибыли (1)\nСмотреть график (2)): ')

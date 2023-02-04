@@ -2,12 +2,11 @@ import json
 from statistics import mean
 from create_data import CreateData
 
-class Average:
+class Average(CreateData):
 
     def __init__(self):
-        self.createdata = CreateData()
-        self.average = 0
-        self.period = []
+        super().__init__()
+        
 
     def average_sum(self, period):
-        self.average = mean(self.createdata.profit)
+        pass

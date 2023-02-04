@@ -43,14 +43,16 @@ class Graph(CreateData):
         start_period = self.equalization(self.start_period, mode, overall)
         end_period = self.equalization(self.end_period, mode, overall)
         max_value = max(max(start_period), max(end_period))
+        label_start = f"{self.graph_period_start.strftime('%B %Y')}, средний доход в день {self.average(start_period)}"
+        label_end = f"{self.graph_period_end.strftime('%B %Y')}, средний доход в день {self.average(end_period)}"
 
         x = np.arange(len(self.per_first))  # the label locations
         width = 0.45
         fig, ax = plt.subplots()
         fig.set_size_inches(15, 10)
 
-        rects1 = ax.bar(x - width/2, start_period, width, label=self.graph_period_start.strftime('%B %Y'), color = '#279cd6')
-        rects2 = ax.bar(x + width/2, end_period, width, label=self.graph_period_end.strftime('%B %Y'), color = '#d62727')
+        rects1 = ax.bar(x - width/2, start_period, width, label=label_start, color = '#279cd6')
+        rects2 = ax.bar(x + width/2, end_period, width, label=label_end, color = '#d62727')
 
         # Add some text for labels, title and custom x-axis tick labels, etc.
         ax.set_ylabel('Продажи (шт.)' if mode else 'Доход (грн)')
