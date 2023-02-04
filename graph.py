@@ -9,7 +9,6 @@ class Graph(CreateData):
         super().__init__()
         plt.style.use('_mpl-gallery')
 
-
     def create_graph(self, pur_or_pro):
         '''Create one period graph by days'''
         # plot
