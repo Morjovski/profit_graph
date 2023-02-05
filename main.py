@@ -2,6 +2,7 @@ from add_data import AddData
 from graph import Graph
 from create_data import CreateData
 from average import Average
+from random_data import RandomData
 
 
 class Mode:
@@ -11,12 +12,16 @@ class Mode:
         self.cd = CreateData()
         self.g = Graph()
         self.avg = Average()
+        self.random = RandomData()
 
     def select(self):
         n = input(f'Ввод прибыли (1)\nСмотреть график (2)): ')
         if n == '1':
-            how_much = int(input('Дата одна?: Нет (1), Да (0): '))
-            if not how_much:
+            print('Для создания случайных значений, введите "random" в строке ниже')
+            how_much = input('Дата одна?: Нет (1), Да (0): ')
+            if how_much.lower() == 'random':
+                self.random.randomize()
+            elif not int(how_much):
                 self.ad.add_one_data()
             else:
                 self.ad.add_many_data()
@@ -26,23 +31,23 @@ class Mode:
             overall = int(input(
                 'Общее количество продаж за период? (Да (1), Нет(0)): ' if mode else 'Общая прибыль за период? (Да (1), Нет(0)): '))
             if compare:
-                self.per_start = input('Введите начало периода (YYYY или YYYY-MM): ')
-                self.per_end = input('Введите конец периода (YYYY или YYYY-MM): ')
+                self.per_start = input('Введите начало периода (YYYY-MM): ')
+                self.per_end = input('Введите конец периода (YYYY-MM): ')
                 self.g.take_period(self.per_start, self.per_end)
             else:
-                self.per = input('Какой год\месяц? (YYYY или YYYY-MM): ')
+                self.per = input('Какой год\месяц? (YYYY-MM): ')
                 self.g.take_period(self.per)
-                self.g.create_data(self.per, overall, mode)
+            self.g.create_data(overall, mode)
             if mode:
                 if compare:
                     self.g.create_graph_bar(mode, overall)
                 else:
-                    self.g.create_graph(self.g.purchases)
+                    self.g.create_graph(self.g.purchases_start)
             else:
                 if compare:
                     self.g.create_graph_bar(mode, overall)
                 else:
-                    self.g.create_graph(self.g.profit)
+                    self.g.create_graph(self.g.profit_start)
 
         else:
             print('Некорректный ввод данных!\n')
