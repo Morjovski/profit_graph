@@ -1,89 +1,106 @@
-# Запихнуть сюда метод take_period, create_data и equalization из файла graph.py
 import json
 import datetime
 from statistics import mean
 
+
 class CreateData:
 
     def __init__(self) -> None:
-        with open('data.json') as f:
-            self.file_data = json.load(f)
         self.date = []
-        self.profit_cash = []
-        self.profit_cashless = []
-        self.profit = []
-        self.purchases = []
-        self.overall_sum = 0
+        self.profit_start = []
+        self.profit_end = []
+        self.purchases_start = []
+        self.purchases_end = []
+        self.overall_sum_start = 0
+        self.overall_sum_end = 0
+        self.overall_list_start = []
+        self.overall_list_end = []
 
     def take_period(self, *periods):
         '''Optimise dates for next use'''
-        try:
-            self.start_period = periods[0]
-            self.end_period = periods[1]
-            self.per_first = ['0' + str(i) if len(str(i)) == 0 else str(i) for i in range(1, 32)]
-            self.graph_period_start = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
-            self.graph_period_end = datetime.date(int(periods[1][:4]), int(periods[1][5:7]), 1)
-        except ValueError:
-            self.graph_period_end = datetime.date(1970, 1, 1)
-        except IndexError:
-            self.graph_period_end = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
 
-    def create_data(self, per, overall, mode):
+        self.per_first = ['0' + str(i) if len(str(i)) == 0 else str(i) for i in range(1, 32)]
+        self.start_period = periods[0]
+        self.graph_period_start = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
+        if len(periods) == 2:
+            self.end_period = periods[1]
+            self.graph_period_end = datetime.date(int(periods[1][:4]), int(periods[1][5:7]), 1)
+
+    def create_data(self, overall, mode):
         '''Create data for create_graph bar'''
+
         self.overall = overall
         self.mode = mode
-        if self.overall:
-            if self.mode:
-                for purchases in self.file_data['data']:
-                    if per in purchases['day']:
-                        self.date.append(purchases['day'])
-                        self.overall_sum += purchases['purchases']
-                        self.purchases.append(self.overall_sum)
+
+        with open('data.json') as f:
+            self.file_data = json.load(f)
+
+        for info in self.file_data['data']:
+            if self.start_period in info['day']:
+                self.date.append(info['day'])
+                if self.mode:
+                    self.overall_sum_start += info['purchases']
+                    self.overall_list_start.append(self.overall_sum_start)
+                    self.purchases_start.append(info['purchases'])
+                else:
+                    self.overall_sum_start += info['cash'] + info['cashless']
+                    self.overall_list_start.append(self.overall_sum_start)
+                    self.profit_start.append(info['cash'] + info['cashless'])
+            try:
+                if self.end_period:
+                    if self.end_period in info['day']:
+                        if self.mode:
+                            self.overall_sum_end += info['purchases']
+                            self.overall_list_end.append(self.overall_sum_end)
+                            self.purchases_end.append(info['purchases'])
+                        else:
+                            self.overall_sum_end += info['cash'] + info['cashless']
+                            self.overall_list_end.append(self.overall_sum_end)
+                            self.profit_end.append(info['cash'] + info['cashless'])                        
+            except AttributeError:
+                continue
+
+    def equalization(self, mode, overall, period):
+        '''Choose right data and generate missing data to create a graph'''
+
+        info_list = []
+        if period == self.start_period:
+            if overall:
+                info_list = self.overall_list_start
             else:
-                for profit in self.file_data['data']:
-                    if per in profit['day']:
-                        self.date.append(profit['day'])
-                        self.overall_sum += profit['cash'] + profit['cashless']
-                        self.profit.append(round(self.overall_sum, 2))
+                if mode:
+                    info_list = self.purchases_start
+                else:
+                    info_list = self.profit_start
         else:
-            for date in self.file_data['data']:
-                if per in date['day']:
-                    self.date.append(date['day'])
-                    self.profit_cash.append(date['cash'])
-                    self.profit_cashless.append(date['cashless'])
-                    self.profit.append(round(date['cash'] + date['cashless'], 1))
-                    self.purchases.append(date['purchases'])
-
-    def equalization(self, period, mode, overall):
-        '''Create data for create_graph_bar'''
-        mode_list = []
-        if overall:
-            overall_sum = 0
-            if mode:
-                for purchase in self.file_data['data']:
-                    if period in purchase['day']:
-                        overall_sum += purchase['purchases']
-                        mode_list.append(overall_sum)
+            if overall:
+                info_list = self.overall_list_end
             else:
-                for gain in self.file_data['data']:
-                    if period in gain['day']:
-                        overall_sum += gain['cash'] + gain['cashless']
-                        mode_list.append(overall_sum)
+                if mode:
+                    info_list = self.purchases_end
+                else:
+                    info_list = self.profit_end
+        '''Generates missing dates if days in month less than 31'''
+        
+        for i in range(len(info_list), 31):
+            info_list.append(0)
+
+        return info_list
+
+
+    def average(self, mode, period):
+        '''Return average profit or amout of purchases to create_graph_bar label'''
+
+        info = []
+        if period == self.start_period:
+            if mode:
+                info = self.purchases_start
+            else:
+                info = self.profit_start
         else:
             if mode:
-                for purchase in self.file_data['data']:
-                    if period in purchase['day']:
-                        mode_list.append(purchase['purchases'])
+                info = self.purchases_end
             else:
-                for gain in self.file_data['data']:
-                    if period in gain['day']:
-                        mode_list.append(gain['cash'] + gain['cashless'])
-        '''Generates missing dates if days in month < 31'''
-        for i in range(len(mode_list), 31):
-            mode_list.append(0)
+                info = self.profit_end
 
-        return mode_list
-
-
-    def average(self, info):
-        return mean(info)
+        return round(mean(info), 2)
