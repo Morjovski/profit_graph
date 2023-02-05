@@ -73,7 +73,7 @@ class Graph(CreateData):
                 ax.set_yticks(np.arange(0, (max_value // 10) * 10 + 20, 5))
         else:
             if overall:
-                ax.set_yticks(np.arange(0, (max_value // 10000) * 10000 + 15000, 2500))
+                ax.set_yticks(np.arange(0, (max_value // 10000) * 10000 + 20000, 2500))
             else:
                 ax.set_yticks(np.arange(0, (max_value // 1000) * 1000 + 2000, 500))
 

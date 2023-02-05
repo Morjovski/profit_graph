@@ -1,7 +1,6 @@
 from add_data import AddData
 from graph import Graph
 from create_data import CreateData
-from average import Average
 from random_data import RandomData
 
 
@@ -11,7 +10,6 @@ class Mode:
         self.ad = AddData()
         self.cd = CreateData()
         self.g = Graph()
-        self.avg = Average()
         self.random = RandomData()
 
     def select(self):
