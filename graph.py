@@ -17,9 +17,20 @@ class Graph(CreateData):
 
         ax.plot(self.date, pur_or_pro, linewidth=2.0)
 
+        print(pur_or_pro)
+        print()
+        print(max(pur_or_pro))
+
         if self.overall:
-            ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                yticks=np.arange(0, (max(pur_or_pro) + 1000 if max(pur_or_pro) > 5000 else max(pur_or_pro) + 10), (1000 if max(pur_or_pro) > 1000 else 10)))
+            if max(pur_or_pro) <= 100:
+                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
+                    yticks=np.arange(0, (max(pur_or_pro) + 25), 5))
+            elif max(pur_or_pro) <= 500:
+                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
+                    yticks=np.arange(0, (max(pur_or_pro) + 25), 25))
+            else:
+                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
+                    yticks=np.arange(0, (max(pur_or_pro) + 1000), 1000))
         else:
             ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
                 yticks=np.arange(0, (max(pur_or_pro) + 100 if max(pur_or_pro) > 100 else max(pur_or_pro) + 1), (200 if max(pur_or_pro) > 50 else 1)))
