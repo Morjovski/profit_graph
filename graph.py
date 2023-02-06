@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from create_data import CreateData
+import mplcursors
 
 
 class Graph(CreateData):
@@ -17,20 +18,19 @@ class Graph(CreateData):
 
         ax.plot(self.date, pur_or_pro, linewidth=2.0)
 
-        print(pur_or_pro)
-        print()
-        print(max(pur_or_pro))
-
         if self.overall:
             if max(pur_or_pro) <= 100:
                 ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, (max(pur_or_pro) + 25), 5))
+                    yticks=np.arange(0, max(pur_or_pro) + 10, 1))
             elif max(pur_or_pro) <= 500:
                 ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, (max(pur_or_pro) + 25), 25))
+                    yticks=np.arange(0, max(pur_or_pro) + 25, 25))
+            elif max(pur_or_pro) <= 5000:
+                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
+                    yticks=np.arange(0, max(pur_or_pro) + 100, 250))
             else:
                 ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, (max(pur_or_pro) + 1000), 1000))
+                    yticks=np.arange(0, max(pur_or_pro) + 1000, 2500))
         else:
             ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
                 yticks=np.arange(0, (max(pur_or_pro) + 100 if max(pur_or_pro) > 100 else max(pur_or_pro) + 1), (200 if max(pur_or_pro) > 50 else 1)))
@@ -40,7 +40,7 @@ class Graph(CreateData):
         ax.set_title(f"{('Прибыль за' if max(pur_or_pro) > 1000 else 'Количество продаж за')} {self.graph_period_start.strftime('%B %Y')}")
 
         for index in range(len(self.date)):
-            if index % 2 == 0:
+            if index % 3 == 0:
                 ax.text(self.date[index], pur_or_pro[index], pur_or_pro[index], size=12)
 
         ax.text(self.date[-1], pur_or_pro[-1], pur_or_pro[-1], size=12)
@@ -90,12 +90,24 @@ class Graph(CreateData):
 
         ax.legend(loc=2)
 
-        ax.bar_label(rects1, fontsize=10, rotation=90, weight='bold', label_type='edge', color='black', padding=10)
-        ax.bar_label(rects2, fontsize=10, rotation=90, weight='bold', label_type='edge', color='black', padding=10)
+        # ax.bar_label(rects1, fontsize=10, rotation=90, weight='bold', label_type='edge', color='black', padding=10)
+        # ax.bar_label(rects2, fontsize=10, rotation=90, weight='bold', label_type='edge', color='black', padding=10)
+
         fig.tight_layout()
 
+        cursor = mplcursors.cursor(hover=mplcursors.HoverMode.Transient)
+
+        @cursor.connect("add")
+        def on_add(sel):
+            x, y, width, height = sel.artist[sel.index].get_bbox().bounds
+            sel.annotation.set(text=f'{height} грн.',
+                            position=(0, 10), anncoords="offset points")
+            sel.annotation.xy = (x + width / 2, y + height)
+            
         if mode:
             fig.savefig(f"graphs/purchases_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
         else:
             fig.savefig(f"graphs/profit_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
         plt.show()
+
+

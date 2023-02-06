@@ -3,6 +3,7 @@ import datetime
 from statistics import mean
 
 
+
 class CreateData:
 
     def __init__(self) -> None:
@@ -31,9 +32,12 @@ class CreateData:
 
         self.overall = overall
         self.mode = mode
-
-        with open('data.json') as f:
-            self.file_data = json.load(f)
+        try:
+            with open('data.json') as f:
+                self.file_data = json.load(f)
+        except FileNotFoundError:
+            print("There is no 'data.json' file! Enter the data below:")
+            self.ad.add_data()
 
         for info in self.file_data['data']:
             if self.start_period in info['day']:
@@ -44,8 +48,8 @@ class CreateData:
                     self.purchases_start.append(info['purchases'])
                 else:
                     self.overall_sum_start += info['cash'] + info['cashless']
-                    self.overall_list_start.append(self.overall_sum_start)
-                    self.profit_start.append(info['cash'] + info['cashless'])
+                    self.overall_list_start.append(round(self.overall_sum_start, 2))
+                    self.profit_start.append(round(info['cash'] + info['cashless'], 2))
             try:
                 if self.end_period:
                     if self.end_period in info['day']:
@@ -55,8 +59,8 @@ class CreateData:
                             self.purchases_end.append(info['purchases'])
                         else:
                             self.overall_sum_end += info['cash'] + info['cashless']
-                            self.overall_list_end.append(self.overall_sum_end)
-                            self.profit_end.append(info['cash'] + info['cashless'])                        
+                            self.overall_list_end.append(round(self.overall_sum_end, 2))
+                            self.profit_end.append(round(info['cash'] + info['cashless'], 2))                        
             except AttributeError:
                 continue
 

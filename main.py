@@ -45,11 +45,15 @@ class Mode:
             if mode:
                 if compare:
                     self.g.create_graph_bar(mode, overall)
+                elif overall:
+                    self.g.create_graph(self.g.overall_list_start)
                 else:
                     self.g.create_graph(self.g.purchases_start)
             else:
                 if compare:
                     self.g.create_graph_bar(mode, overall)
+                elif overall:
+                    self.g.create_graph(self.g.overall_list_start)
                 else:
                     self.g.create_graph(self.g.profit_start)
         else:
