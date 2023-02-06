@@ -11,7 +11,6 @@ class Graph(CreateData):
         super().__init__()
         plt.style.use('_mpl-gallery')
 
-
     def create_graph(self, pur_or_pro):
         '''Create one period graph by days'''
         # plot
@@ -43,8 +42,8 @@ class Graph(CreateData):
         start_period = self.equalization(self.start_period, mode, overall)
         end_period = self.equalization(self.end_period, mode, overall)
         max_value = max(max(start_period), max(end_period))
-        label_start = f"{self.graph_period_start.strftime('%B %Y')}, средний доход в день {self.average(start_period)}"
-        label_end = f"{self.graph_period_end.strftime('%B %Y')}, средний доход в день {self.average(end_period)}"
+        label_start = f"{self.graph_period_start.strftime('%B %Y')}, средний доход в день {self.average(start_period)} грн"
+        label_end = f"{self.graph_period_end.strftime('%B %Y')}, средний доход в день {self.average(end_period)} грн"
 
         x = np.arange(len(self.per_first))  # the label locations
         width = 0.45

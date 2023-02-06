@@ -86,4 +86,4 @@ class CreateData:
 
 
     def average(self, info):
-        return mean(info)
+        return round(mean(info), 2)
