@@ -25,11 +25,7 @@ class Mode:
             mode = int(input('Просмотр прибыли (0), просмотр кол-ва продаж (1): '))
             compare = int(input('Сравнить два периода? Да - (1), Нет (0): '))
             overall = int(
-                input(
-                'Общее количество продаж за период? (Да (1), Нет(0)): ' 
-                if mode else 
-                'Общая прибыль за период? (Да (1), Нет(0)): '
-                )
+                input('Общее количество продаж за период? (Да (1), Нет(0)): ' if mode else 'Общая прибыль за период? (Да (1), Нет(0)): ')
             )
 
             if compare:
@@ -37,8 +33,8 @@ class Mode:
                 per_end = input('Введите конец периода (YYYY-MM): ')
                 self.g.take_period(per_start, per_end)
             else:
-                self.per = input('Какой год\месяц? (YYYY-MM): ')
-                self.g.take_period(self.per)
+                per = input('Какой год\месяц? (YYYY-MM): ')
+                self.g.take_period(per)
 
             self.g.create_data(overall, mode)
 
@@ -59,6 +55,7 @@ class Mode:
         else:
             print('Некорректный ввод данных!\n')
             gr.select()
+
 
 if __name__ == '__main__':
     gr = Mode()

@@ -3,7 +3,6 @@ import datetime
 from statistics import mean
 
 
-
 class CreateData:
 
     def __init__(self) -> None:
@@ -90,7 +89,6 @@ class CreateData:
             info_list.append(0)
 
         return info_list
-
 
     def average(self, mode, period):
         '''Return average profit or amout of purchases to create_graph_bar label'''

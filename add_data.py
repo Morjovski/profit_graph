@@ -16,13 +16,13 @@ class AddData:
 
         while True:
             answ_list = AddData.create_answer()
-            dic = {"day": answ_list[0], "cash": float(answ_list[1]), "cashless": float(answ_list[2]), "purchases": int(answ_list[3])}
+            dic = {"day": answ_list[0], "cash": answ_list[1], "cashless": answ_list[2], "purchases": int(answ_list[3])}
             if not os.path.exists(self.fn):
                 self.create_file(dic, answ_list[0], answ_list[1], answ_list[2], answ_list[3])
             else:
                 self.update_file(dic, answ_list[0], answ_list[1], answ_list[1], answ_list[3])
 
-    def update_file(self, dic, cash, cashless, purchases, day):
+    def update_file(self,dic, day, cash, cashless, purchases):
         '''Update data.json by adding new data'''
 
         with open(self.fn, 'r+') as f:
@@ -61,7 +61,7 @@ class AddData:
                         else:
                             print(e)
                             continue
-                    answ_list.append(day)
+                    answ_list.append(str(day))
                     break
             else:
                 while True:
