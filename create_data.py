@@ -1,6 +1,6 @@
 import json
 import datetime
-from statistics import mean
+from statistics import mean, StatisticsError
 
 
 class CreateData:
@@ -31,12 +31,9 @@ class CreateData:
 
         self.overall = overall
         self.mode = mode
-        try:
-            with open('data.json') as f:
-                self.file_data = json.load(f)
-        except FileNotFoundError:
-            print("There is no 'data.json' file! Enter the data below:")
-            self.ad.add_data()
+
+        with open('data.json') as f:
+            self.file_data = json.load(f)
 
         for info in self.file_data['data']:
             if self.start_period in info['day']:
@@ -104,5 +101,11 @@ class CreateData:
                 info = self.purchases_end
             else:
                 info = self.profit_end
-
-        return round(mean(info), 2)
+        try:
+            return round(mean(info), 2)
+        except StatisticsError:
+            from main import Mode
+            mode = Mode()
+            print('\nВведен отрезок времени, которого не существует в data.json!\nВозвращение в главное меню.\n')
+            mode.select()
+            
