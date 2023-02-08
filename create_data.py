@@ -1,11 +1,13 @@
 import json
 import datetime
-from statistics import mean
+from statistics import mean, StatisticsError
 
+import language as lg
 
 class CreateData:
 
-    def __init__(self) -> None:
+    def __init__(self, LANGUAGE):
+        self.LANGUAGE = LANGUAGE
         self.date = []
         self.profit_start = []
         self.profit_end = []
@@ -44,8 +46,8 @@ class CreateData:
                     self.purchases_start.append(info['purchases'])
                 else:
                     self.overall_sum_start += info['cash'] + info['cashless']
-                    self.overall_list_start.append(self.overall_sum_start)
-                    self.profit_start.append(info['cash'] + info['cashless'])
+                    self.overall_list_start.append(round(self.overall_sum_start, 2))
+                    self.profit_start.append(round(info['cash'] + info['cashless'], 2))
             try:
                 if self.end_period:
                     if self.end_period in info['day']:
@@ -55,8 +57,8 @@ class CreateData:
                             self.purchases_end.append(info['purchases'])
                         else:
                             self.overall_sum_end += info['cash'] + info['cashless']
-                            self.overall_list_end.append(self.overall_sum_end)
-                            self.profit_end.append(info['cash'] + info['cashless'])                        
+                            self.overall_list_end.append(round(self.overall_sum_end, 2))
+                            self.profit_end.append(round(info['cash'] + info['cashless'], 2))                        
             except AttributeError:
                 continue
 
@@ -87,9 +89,8 @@ class CreateData:
 
         return info_list
 
-
     def average(self, mode, period):
-        '''Return average profit or amout of purchases to create_graph_bar label'''
+        '''Return average profit or amout of purchases to label'''
 
         info = []
         if period == self.start_period:
@@ -102,5 +103,11 @@ class CreateData:
                 info = self.purchases_end
             else:
                 info = self.profit_end
-
-        return round(mean(info), 2)
+        try:
+            return round(mean(info), 2)
+        except StatisticsError:
+            from main import Mode
+            mode = Mode()
+            print(lg.does_not_exist_lang[self.LANGUAGE])
+            mode.select()
+            
