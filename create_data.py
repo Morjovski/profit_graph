@@ -2,10 +2,12 @@ import json
 import datetime
 from statistics import mean, StatisticsError
 
+import language as lg
 
 class CreateData:
 
-    def __init__(self) -> None:
+    def __init__(self, LANGUAGE):
+        self.LANGUAGE = LANGUAGE
         self.date = []
         self.profit_start = []
         self.profit_end = []
@@ -88,7 +90,7 @@ class CreateData:
         return info_list
 
     def average(self, mode, period):
-        '''Return average profit or amout of purchases to create_graph_bar label'''
+        '''Return average profit or amout of purchases to label'''
 
         info = []
         if period == self.start_period:
@@ -106,6 +108,6 @@ class CreateData:
         except StatisticsError:
             from main import Mode
             mode = Mode()
-            print('\nВведен отрезок времени, которого не существует в data.json!\nВозвращение в главное меню.\n')
+            print(lg.does_not_exist_lang[self.LANGUAGE])
             mode.select()
             

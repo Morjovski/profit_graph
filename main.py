@@ -5,45 +5,62 @@ from graph import Graph
 from create_data import CreateData
 from random_data import RandomData
 
+import language as lg
+
 
 class Mode:
 
     def __init__(self):
-        self.ad = AddData()
-        self.cd = CreateData()
-        self.g = Graph()
+        self.LANGUAGE = self.choose_language()
+        self.ad = AddData(self.LANGUAGE)
+        self.cd = CreateData(self.LANGUAGE)
+        self.g = Graph(self.LANGUAGE)
         self.random = RandomData()
 
+    def choose_language(self):
+        lang = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
+        if lang.lower() == 'en':
+            return "EN"
+        elif lang.lower() == 'ru':
+            return "RU"
+        elif lang.lower() == 'ua':
+            return "UA"
+        else:
+            print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
+            gr.choose_language()
+
     def select(self):
-        n = input(f'Ввод прибыли (1)\nСмотреть график (2)): ')
+        n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
         if n == '1':
             self.ad.add_data()
         elif n == '2':
             if not os.path.exists('data.json'):
-                print("There is no 'data.json' file! Enter the data below:")
+                print(lg.no_file_data_lang[self.LANGUAGE])
                 self.ad.add_data()
             else:
                 while True:
                     try:
-                        mode = int(input('Просмотр прибыли (0), просмотр кол-ва продаж (1): '))
-                        compare = int(input('Сравнить два периода? Да - (1), Нет (0): '))
+                        mode = int(input(f'{lg.purchase_profit_mode_lang[self.LANGUAGE]}'))
+                        if mode > 1:
+                            raise ValueError
+                        compare = int(input(f'{lg.compare_mode_lang[self.LANGUAGE]}'))
+                        if compare > 1:
+                            raise ValueError
                         overall = int(
-                            input('Общее количество продаж за период? (Да (1), Нет(0)): ' if mode else 'Общая прибыль за период? (Да (1), Нет(0)): ')
+                            input(lg.overall_mode_purchases_lang[self.LANGUAGE] if mode else lg.overall_mode_profit_lang[self.LANGUAGE])
                         )
+                        if overall > 1:
+                            raise ValueError
                         break
                     except ValueError:
-                        print('Некорректный ввод данных!')
-                    except SyntaxError:
-                        print('Некорректный ввод данных!')
-                    except TypeError:
-                        print('Некорректный ввод данных!')
+                        print(lg.incorrect_data_lang[self.LANGUAGE])
 
                 if compare:
-                    per_start = input('Введите начало периода (YYYY-MM): ')
-                    per_end = input('Введите конец периода (YYYY-MM): ')
+                    per_start = input(f'{lg.per_start_lang[self.LANGUAGE]}')
+                    per_end = input(f'{lg.per_end_lang[self.LANGUAGE]}')
                     self.g.take_period(per_start, per_end)
                 else:
-                    per = input('Какой год\месяц? (YYYY-MM): ')
+                    per = input(f'{lg.one_per_lang[self.LANGUAGE]}')
                     self.g.take_period(per)
 
                 self.g.create_data(overall, mode)
@@ -63,7 +80,7 @@ class Mode:
                     else:
                         self.g.create_graph(self.g.profit_start)
         else:
-            print('Некорректный ввод данных!\n')
+            print(f'{lg.incorrect_data_lang[self.LANGUAGE]}\n')
             gr.select()
 
 

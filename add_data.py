@@ -5,17 +5,19 @@ import colorama
 from colorama import Fore
 from random_data import RandomData
 
+import language as lg
 
 class AddData:
     
-    def __init__(self):
+    def __init__(self, LANGUAGE):
+        self.LANGUAGE = LANGUAGE
         colorama.init(convert=True)
         self.fn = 'data.json'
     
     def add_data(self):
         '''Used for adding a new data in data.json'''
         while True:
-            answ_list = AddData.create_answer()
+            answ_list = AddData.create_answer(self.LANGUAGE)
             dic = {"day": answ_list[0], "cash": answ_list[1], "cashless": answ_list[2], "purchases": int(answ_list[3])}
             if not os.path.exists(self.fn):
                 self.create_file(dic, answ_list[0], answ_list[1], answ_list[2], answ_list[3])
@@ -30,7 +32,7 @@ class AddData:
             f.seek(0)
             fd["data"].append(dic)
             json.dump(fd, f, indent=4)
-            print(f'{purchases} продаж на сумму {Fore.GREEN}{cash + cashless}{Fore.RESET} грн за {Fore.GREEN}{day}{Fore.RESET} успешно добавлена!')
+            print(lg.update_file_lang[self.LANGUAGE])
             print()
 
     def create_file(self, dic, day, cash, cashless, purchases):
@@ -39,52 +41,52 @@ class AddData:
         start_file = {"data": [dic]}
         with open(self.fn, 'w') as f:
             json.dump(start_file, f, indent=4)
-            print(f'Файл {Fore.YELLOW}{self.fn}{Fore.RESET} успешно создан с добавлением {Fore.GREEN}{purchases}{Fore.RESET} продаж на сумму {Fore.GREEN}{cash + cashless}{Fore.RESET} грн за дату {Fore.GREEN}{day}{Fore.RESET}!')
+            print(lg.create_file_lang[self.LANGUAGE])
             print()
     
-    def create_answer():
-        enter = ['день', 'прибыль наличными', 'прибыль безналичными', 'продажи']
+    def create_answer(LANGUAGE):
+        enter = lg.create_file_enter_lang[LANGUAGE]
         answ_list = []
-        print(f'Введите "{Fore.RED}q{Fore.RESET}" в любой момент для выхода из режима добавления')
+        print(lg.enter_quit_add_data_lang[LANGUAGE])
+        random = input(f"{lg.create_file_random_lang[LANGUAGE]}")
+        if random.lower() == 'random':
+            random_data = RandomData()
+            random_data.randomize()
+            AddData.continue_graph()
         for index, variable in enumerate(enter):
-            random = input("Введите 'random' для генерации случайных данных: ")
-            if random.lower() == 'random':
-                random_data = RandomData()
-                random_data.randomize()
-                AddData.continue_graph()
             if index == 0:
                 while True:
-                    print('Оставьте пустым если дата текущая!')
-                    day = input(f'Введите {variable}: ')
+                    print(lg.leave_empty_lang[LANGUAGE])
+                    day = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if day == 'q':
-                        AddData.continue_graph()
+                        AddData.continue_graph(LANGUAGE)
                     try:
                         day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
                     except ValueError as e:
                         if len(day) == 0:
                             day = datetime.datetime.now().date()
                         else:
-                            print(e)
+                            print(lg.incorrect_day_lang[LANGUAGE])
                             continue
                     answ_list.append(str(day))
                     break
             else:
                 while True:
-                    answ = input(f'Введите {variable}: ')
+                    answ = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if answ == 'q':
-                        AddData.continue_graph()
+                        AddData.continue_graph(LANGUAGE)
                     try:
                         answ = float(answ)
                     except ValueError:
-                        print('Введено неверное значение!')
+                        print(lg.incorrect_data_lang[LANGUAGE])
                         continue
                     answ_list.append(answ)
                     break
         return answ_list
 
-    def continue_graph():
+    def continue_graph(LANGUAGE):
         from main import Mode
-        n = int(input('Вернуться в главное меню? (1) - Да, (0) - Нет: '))
+        n = int(input(f'{lg.back_to_main_menu_lang[LANGUAGE]}'))
         if n:
             n += 1
             mode = Mode()
