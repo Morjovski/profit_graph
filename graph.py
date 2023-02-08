@@ -39,7 +39,8 @@ class Graph(CreateData):
                     yticks=np.arange(0, max(pur_or_pro) + 1000, 2500))
         else:
             ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                yticks=np.arange(0, (max(pur_or_pro) + 100 if max(pur_or_pro) > 100 else max(pur_or_pro) + 1), (200 if max(pur_or_pro) > 50 else 1)))
+                yticks=np.arange(0, (max(pur_or_pro) + 100 if max(pur_or_pro) > 100 else max(pur_or_pro) + 1),
+                                 (200 if max(pur_or_pro) > 50 else 1)))
 
         ax.set_ylabel((lg.profit_label_lang[self.LANGUAGE] if max(pur_or_pro) > 1000 else lg.purchases_label_lang[self.LANGUAGE]))
         ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
@@ -50,6 +51,7 @@ class Graph(CreateData):
         plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
 
         cursor = mplcursors.cursor(dt, hover='True')
+
         @cursor.connect("add")
         def on_add(sel):
             xi, yi = sel.target
@@ -59,7 +61,8 @@ class Graph(CreateData):
 
         plt.plot(self.date, pur_or_pro, color=self.first_color, alpha=0.5)
 
-        fig.savefig(f"graphs/{('profit' if max(pur_or_pro) > 1000 else 'purchases')}_{self.graph_period_start}.png", bbox_inches='tight')
+        fig.savefig(f"graphs/{('profit' if max(pur_or_pro) > 1000 else 'purchases')}_{self.graph_period_start}.png",
+                    bbox_inches='tight')
         plt.show()
 
     def create_graph_bar(self, mode, overall):
@@ -106,15 +109,21 @@ class Graph(CreateData):
         fig.tight_layout()
 
         cursor = mplcursors.cursor([rects1, rects2], hover='True')
+
         @cursor.connect("add")
         def on_add(sel):
             x, y, width, height = sel.artist[sel.index].get_bbox().bounds
-            sel.annotation.set(text=f'{lg.hover_annotation_day_lang[self.LANGUAGE]}: {self.date[sel.index][-2:]}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}', position=(0, 20), anncoords="offset points")
+            sel.annotation.set(text=f'{lg.hover_annotation_day_lang[self.LANGUAGE]}: {self.date[sel.index][-2:]}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}',
+                               position=(0, 20),
+                               anncoords="offset points"
+                               )
             sel.annotation.xy = (x + width / 2, y + height)
             sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.6)
             
         if mode:
-            fig.savefig(f"graphs/purchases_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
+            fig.savefig(f"graphs/purchases_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png",
+                        bbox_inches='tight')
         else:
-            fig.savefig(f"graphs/profit_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
+            fig.savefig(f"graphs/profit_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png",
+                        bbox_inches='tight')
         plt.show()
