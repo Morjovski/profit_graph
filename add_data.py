@@ -3,8 +3,8 @@ import os
 import datetime
 import colorama
 from colorama import Fore
-from random_data import RandomData
 
+from random_data import RandomData
 import language as lg
 
 class AddData:
@@ -52,14 +52,16 @@ class AddData:
         if random.lower() == 'random':
             random_data = RandomData()
             random_data.randomize()
-            AddData.continue_graph()
+            AddData.continue_graph(LANGUAGE)
+        elif random.lower() == 'q':
+            AddData.continue_graph(LANGUAGE)
         for index, variable in enumerate(enter):
             if index == 0:
                 while True:
                     print(lg.leave_empty_lang[LANGUAGE])
                     day = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if day == 'q':
-                        AddData.continue_graph(LANGUAGE)
+                        AddData.back_main_menu(LANGUAGE)
                     try:
                         day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
                     except ValueError as e:
@@ -74,7 +76,7 @@ class AddData:
                 while True:
                     answ = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if answ == 'q':
-                        AddData.continue_graph(LANGUAGE)
+                        AddData.back_main_menu(LANGUAGE)
                     try:
                         answ = float(answ)
                     except ValueError:
@@ -84,13 +86,12 @@ class AddData:
                     break
         return answ_list
 
-    def continue_graph(LANGUAGE):
+    def back_main_menu(LANGUAGE):
         from main import Mode
         n = int(input(f'{lg.back_to_main_menu_lang[LANGUAGE]}'))
         if n:
             n += 1
-            mode = Mode()
-            mode.select()
+            Mode(LANGUAGE).select()
         else:
             quit()
 

@@ -8,26 +8,16 @@ from random_data import RandomData
 import language as lg
 
 
+LANGUAGE = 'EN'
+
 class Mode:
 
-    def __init__(self):
-        self.LANGUAGE = self.choose_language()
+    def __init__(self, LANGUAGE):
+        self.LANGUAGE = LANGUAGE
         self.ad = AddData(self.LANGUAGE)
         self.cd = CreateData(self.LANGUAGE)
         self.g = Graph(self.LANGUAGE)
         self.random = RandomData()
-
-    def choose_language(self):
-        lang = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
-        if lang.lower() == 'en':
-            return "EN"
-        elif lang.lower() == 'ru':
-            return "RU"
-        elif lang.lower() == 'ua':
-            return "UA"
-        else:
-            print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
-            gr.choose_language()
 
     def select(self):
         n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
@@ -85,5 +75,21 @@ class Mode:
 
 
 if __name__ == '__main__':
-    gr = Mode()
+    
+    while True:
+        LANGUAGE = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
+        if len(LANGUAGE) == 0 or LANGUAGE.lower() == 'en':
+            LANGUAGE = 'EN'
+            break
+        elif LANGUAGE.lower() == 'ru':
+            LANGUAGE = 'RU'
+            break
+        elif LANGUAGE.lower() == 'ua':
+            LANGUAGE = 'UA'
+            break
+        else:
+            print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
+            continue
+
+    gr = Mode(LANGUAGE)
     gr.select()

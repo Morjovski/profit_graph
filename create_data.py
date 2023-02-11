@@ -107,7 +107,7 @@ class CreateData:
             return round(mean(info), 2)
         except StatisticsError:
             from main import Mode
-            mode = Mode()
+            mode = Mode(self.LANGUAGE)
             print(lg.does_not_exist_lang[self.LANGUAGE])
             mode.select()
             
