@@ -1,3 +1,15 @@
+def choose_language():
+    while True:
+        lang = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
+        if lang.lower() == 'en' or len(lang) == 0:
+            return "EN"
+        elif lang.lower() == 'ru':
+            return "RU"
+        elif lang.lower() == 'ua':
+            return "UA"
+        else:
+            print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
+
 input_mode_lang = {
     "EN": "Enter data (1)\nBuild a graph (2): ",
     "RU": "Ввод прибыли (1)\nПостроить график (2): ",

@@ -1,18 +1,14 @@
 import json
 import os
 import datetime
-import colorama
-from colorama import Fore
-from random_data import RandomData
 
+from random_data import RandomData
 import language as lg
 
 class AddData:
     
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
-        colorama.init(convert=True)
-        self.fn = 'data.json'
     
     def add_data(self):
         '''Used for adding a new data in data.json'''
@@ -27,7 +23,7 @@ class AddData:
     def update_file(self, dic, day, cash, cashless, purchases):
         '''Update data.json by adding new data'''
 
-        with open(self.fn, 'r+') as f:
+        with open('data.json', 'r+') as f:
             fd = json.load(f)
             f.seek(0)
             fd["data"].append(dic)
@@ -39,7 +35,7 @@ class AddData:
         '''Creates data.json if the file not exist then add first data'''
         
         start_file = {"data": [dic]}
-        with open(self.fn, 'w') as f:
+        with open('data.json', 'w') as f:
             json.dump(start_file, f, indent=4)
             print(lg.create_file_lang[self.LANGUAGE])
             print()
@@ -48,11 +44,6 @@ class AddData:
         enter = lg.create_file_enter_lang[LANGUAGE]
         answ_list = []
         print(lg.enter_quit_add_data_lang[LANGUAGE])
-        random = input(f"{lg.create_file_random_lang[LANGUAGE]}")
-        if random.lower() == 'random':
-            random_data = RandomData()
-            random_data.randomize()
-            AddData.continue_graph()
         for index, variable in enumerate(enter):
             if index == 0:
                 while True:
@@ -60,16 +51,17 @@ class AddData:
                     day = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if day == 'q':
                         AddData.continue_graph(LANGUAGE)
-                    try:
-                        day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
-                    except ValueError as e:
-                        if len(day) == 0:
-                            day = datetime.datetime.now().date()
-                        else:
-                            print(lg.incorrect_day_lang[LANGUAGE])
-                            continue
-                    answ_list.append(str(day))
-                    break
+                    else:
+                        try:
+                            day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
+                        except ValueError as e:
+                            if len(day) == 0:
+                                day = datetime.datetime.now().date()
+                            else:
+                                print(lg.incorrect_day_lang[LANGUAGE])
+                                continue
+                        answ_list.append(str(day))
+                        break
             else:
                 while True:
                     answ = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
@@ -88,7 +80,6 @@ class AddData:
         from main import Mode
         n = int(input(f'{lg.back_to_main_menu_lang[LANGUAGE]}'))
         if n:
-            n += 1
             mode = Mode()
             mode.select()
         else:

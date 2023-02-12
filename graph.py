@@ -109,7 +109,7 @@ class Graph(CreateData):
         @cursor.connect("add")
         def on_add(sel):
             x, y, width, height = sel.artist[sel.index].get_bbox().bounds
-            sel.annotation.set(text=f'{lg.hover_annotation_day_lang[self.LANGUAGE]}: {self.date[sel.index][-2:]}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}', position=(0, 20), anncoords="offset points")
+            sel.annotation.set(text=f'{lg.hover_annotation_day_lang[self.LANGUAGE]}: {self.per_first[sel.index]}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}', position=(0, 20), anncoords="offset points")
             sel.annotation.xy = (x + width / 2, y + height)
             sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.6)
             
