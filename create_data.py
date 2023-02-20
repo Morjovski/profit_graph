@@ -9,8 +9,11 @@ class CreateData:
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
 
-    def take_period(self, *periods):
+    def take_period(self, interval, periods):
         '''Optimise dates for next use'''
+        self.periods = []
+        for period in periods:
+            self.periods.append(period.split('-'))
 
         self.per_first = ['0' + str(i) if len(str(i)) == 0 else str(i) for i in range(1, 32)]
         self.start_period = periods[0]
@@ -83,8 +86,8 @@ class CreateData:
                     info_list = self.purchases_end
                 else:
                     info_list = self.profit_end
-        '''Generates missing dates if days in month less than 31'''
-        
+                    
+        # Add 0 to end of list to equalize two periods for matplotlib
         for i in range(len(info_list), 31):
             info_list.append(0)
 
