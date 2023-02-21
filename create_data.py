@@ -8,15 +8,6 @@ class CreateData:
 
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
-        self.date = []
-        self.profit_start = []
-        self.profit_end = []
-        self.purchases_start = []
-        self.purchases_end = []
-        self.overall_sum_start = 0
-        self.overall_sum_end = 0
-        self.overall_list_start = []
-        self.overall_list_end = []
 
     def take_period(self, *periods):
         '''Optimise dates for next use'''
@@ -30,6 +21,16 @@ class CreateData:
 
     def create_data(self, overall, mode):
         '''Create data for create_graph bar'''
+
+        self.date = []
+        self.profit_start = []
+        self.profit_end = []
+        self.purchases_start = []
+        self.purchases_end = []
+        self.overall_sum_start = 0
+        self.overall_sum_end = 0
+        self.overall_list_start = []
+        self.overall_list_end = []
 
         self.overall = overall
         self.mode = mode
