@@ -7,3 +7,4 @@ graphs/
 open_file.py
 data_backup/
 SQLTest/
+entries.sqlite
