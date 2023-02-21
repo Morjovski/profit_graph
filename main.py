@@ -36,13 +36,13 @@ class Mode:
                         print('За месяц по дням - (3)')
                         interval = int(input("Выберите режим: "))
                         if interval < 1 or interval > 3:
-                            self.incorrect_data(self)
+                            self.incorrect_data()
                             continue
                         break
                     while True:
                         mode = int(input(f'{lg.purchase_profit_mode_lang[self.LANGUAGE]}'))
                         if mode > 1:
-                            self.incorrect_data(self)
+                            self.incorrect_data()
                             continue
                         break
                     while True:
@@ -50,19 +50,20 @@ class Mode:
                             input(lg.overall_mode_purchases_lang[self.LANGUAGE] if mode else lg.overall_mode_profit_lang[self.LANGUAGE])
                         )
                         if overall > 1:
-                            self.incorrect_data(self)
+                            self.incorrect_data()
                             continue
                         break
 
                     self.cd.take_period(interval)
-                    formatted_list, periods = self.cd.create_data(interval, overall, mode)
-                    self.g.create_graph_bar(formatted_list, periods)
+                    formatted_list = self.cd.create_data(interval, overall, mode)
+                    self.g.create_graph_bar(formatted_list)
 
             else:
                 print(f'{lg.incorrect_data_lang[self.LANGUAGE]}\n')
 
     def incorrect_data(self):
         print(lg.incorrect_data_lang[self.LANGUAGE])
+
 
 if __name__ == '__main__':
     gr = Mode()

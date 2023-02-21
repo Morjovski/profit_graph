@@ -13,29 +13,33 @@ class Graph(CreateData):
         self.LANGUAGE = LANGUAGE
         super().__init__(LANGUAGE)
         plt.style.use('_mpl-gallery')
-        self.colors = ['#82776e', '#776d65', '#6d635c', '#625953', '#58504a', '#4d4641', '#423c38', '#38332f', '#2d2926', '#221f1d', '#181614', '#0d0c0b', '#020202']
+        self.colors = ['#82776e', '#776d65', '#6d635c', '#625953', '#58504a', '#4d4641', '#423c38',
+                       '#38332f', '#2d2926', '#221f1d', '#181614', '#0d0c0b', '#020202']
         plt.rcParams["figure.autolayout"] = True
 
-    def create_graph_bar(self, formatted_list, periods):
-        '''Compare two periods by grouped bar chart style'''
+    def create_graph_bar(self, formatted_list):
+        """Compare two periods by grouped bar chart style"""
         
         # start_period = self.equalization(mode, overall, self.start_period)
         # end_period = self.equalization(mode, overall, self.end_period)
         # max_value = self.max_data(formatted_list)
         fig, ax = plt.subplots()
-        fig.set_size_inches(15, 10)
+        # fig.set_size_inches(15, 10)
+        colors = plt.rcParams['axes.prop_cycle'].by_key()['color']
+        n_bars = len(formatted_list)
+        if n_bars < 3:
+            total_width = 0.5
+        else:
+            total_width = 0.8
+        bar_width = total_width / n_bars
+        bars = []
+        for index, (name, values) in enumerate(formatted_list.items()):
+            x_offset = (index - n_bars / 2) * bar_width + bar_width / 2
+            for x, y in enumerate(values):
+                bar = ax.bar(x + x_offset, y, width=bar_width * 0.8, color=self.colors[index % len(colors)])
+            bars.append(bar[0])
+        ax.legend(bars, formatted_list.keys())
 
-        n_bars = np.array(formatted_list)
-        width = 0.8
-        single_width = width / n_bars
-
-        for index, value in enumerate(formatted_list):
-            x_offset = (index - n_bars / 2) * single_width + single_width / 2
-            print(f"Formatted_list is {formatted_list}")
-            print(f"Values is {value}")
-            print(f"Periods is {periods}")
-            # for x, y in enumerate(values):
-            bar = ax.bar(index + x_offset, value, width=single_width * 1, label=periods[index], color = self.colors[index])
 
         # if mode:
         #     label_start = f"{self.graph_period_start.strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(self.mode, self.start_period)}"
@@ -51,10 +55,8 @@ class Graph(CreateData):
         #              if mode else f"{lg.profit_title_lang[self.LANGUAGE]} {self.graph_period_start.strftime('%B %Y')} - {self.graph_period_end.strftime('%B %Y')}")
         # ax.set_ylabel(lg.purchases_label_lang[self.LANGUAGE] if mode else lg.profit_label_lang[self.LANGUAGE])
         # ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
-        print()
-        print(n_bars, periods)
-        print()
-        ax.set_xticks(n_bars, periods)
+
+        # ax.set_xticks(range(n_bars), formatted_list.keys())
         # ax.xaxis.set_major_locator(tic.MaxNLocator(2))
 
         # if mode:
@@ -67,8 +69,6 @@ class Graph(CreateData):
         #         ax.set_yticks(np.arange(0, (max_value // 10000) * 10000 + 20000, 2500))
         #     else:
         #         ax.set_yticks(np.arange(0, (max_value // 1000) * 1000 + 2000, 500))
-
-        ax.legend(loc=2)
 
         fig.tight_layout()
 

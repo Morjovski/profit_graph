@@ -11,7 +11,6 @@ class AddData(db.DataBase):
         super().__init__()
         self.Flag = False
 
-    
     def add_data(self):
         """Used for adding a new data in SQLite database"""
         db.DataBase.connect(self)
