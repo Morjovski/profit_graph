@@ -7,11 +7,13 @@ from tqdm import tqdm
 class DataBase:
 
     def __init__(self):
-        self.conn = sqlite3.connect('entries.sqlite')
-        self.cur = self.conn.cursor()
         self.year_id = 0
 
-    def create_db(self):
+    def connect(self):
+        self.conn = sqlite3.connect('entries.sqlite')
+        self.cur = self.conn.cursor()
+
+    def create(self):
         """Create tables in database if they not exists"""
         self.cur.executescript("""
             CREATE TABLE IF NOT EXISTS years (
@@ -55,12 +57,11 @@ class DataBase:
         """Takes year_id to "days" table"""
         years_db = self.cur.execute('SELECT years.id, years.year FROM years')
         for year_db in years_db:
-            print(year_db)
             if year_db[1] == int(year):
                 self.year_id = year_db[0]
 
-    def duplicate_check_db(self, period):
-        """Search if current period is not in Database"""
+    def duplicate_check(self, period):
+        """Check if current period is not in Database"""
         duplicate = self.cur.execute("""SELECT days.day, days.month_id, days.year_id 
                                         FROM days 
                                         JOIN years 
@@ -72,10 +73,10 @@ class DataBase:
         else:
             return False
 
-    def commit_db(self):
+    def commit(self):
         """Commits changes to Database"""
         self.conn.commit()
 
-    def close_db(self):
+    def close(self):
         """Close connection with Database"""
         self.cur.close()
