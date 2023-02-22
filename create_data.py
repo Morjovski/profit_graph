@@ -33,7 +33,7 @@ class CreateData(db.DataBase):
             format_data, label = self.collect_years(mode)
         elif interval == 2:
             format_data, label = self.collect_months(mode)
-        elif interval == 3:
+        else:
             format_data, label = self.collect_days(mode)
 
         if overall:
@@ -91,8 +91,6 @@ class CreateData(db.DataBase):
             temp.append(prepare_data)
             label.append(str(year))
             format_data.append(temp)
-            # temp.append(prepare_data)
-            # self.format_data[year] = temp
         print(label)
         return format_data, label
  
@@ -122,11 +120,9 @@ class CreateData(db.DataBase):
                             prepare_data += date[5]
                         else:
                             prepare_data += round(date[3] + date[4], 2)
-                # temp.append(prepare_data)
                 label.append(str(month))
                 temp.append(prepare_data)
             format_data.append(temp)
-            # self.format_data[period] = temp
         return format_data, label
 
     def collect_days(self, mode):
@@ -157,24 +153,19 @@ class CreateData(db.DataBase):
                         prepare_data += round(date[3] + date[4], 2)
                 temp.append(prepare_data)
             format_data.append(temp)
-                #     temp.append(prepare_data)
-                # self.format_data[period] = temp
+
             for l in format_data:
                 if len(l) < 31:
                     for _ in range(len(l), 32):
                         l.append(0)
-            # for value in self.format_data.values():
-            #     if len(value) < 31:
-            #         for _ in range(len(value), 31):
-            #             value.append(0)
+
         for day in range(1, 32):
             label.append(str(day))
-        return format_data, label
 
+        return format_data, label
 
     def average(self, data):
         """Return average profit or purchases to label"""
-
         return round(mean(data), 2)
     
     def max_data(self, data):

@@ -160,15 +160,15 @@ hover_annotation_value_lang = {
 }
 
 average_profit_lang = {
-    "EN": "average profit by day (c.u.):",
-    "RU": "средний доход в день (у.е.):",
-    "UA": "середній прибуток за день (у.о.):"    
+    "EN": "average profit (c.u.):",
+    "RU": "средний доход (у.е.):",
+    "UA": "середній прибуток у.о.):"
 }
 
 average_purchases_lang = {
-    "EN": "average amount of purchases by day:",
-    "RU": "среднее кол-во продаж в день:",
-    "UA": "середня кількість продаж за день:"    
+    "EN": "average amount:",
+    "RU": "среднее кол-во:",
+    "UA": "середня кількість:"
 }
 
 enter_quit_add_data_lang = {
