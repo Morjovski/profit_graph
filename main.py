@@ -18,6 +18,8 @@ class Mode:
         self.random = RandomData()
 
     def select(self):
+        """Main menu"""
+
         while True:
             n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
             if n.lower() == 'random':
@@ -30,10 +32,7 @@ class Mode:
                     self.ad.add_data()
                 else:
                     while True:
-                        print('Просмотр графика за:')
-                        print('За год в общем - (1)')
-                        print('За год помесячно - (2)')
-                        print('За месяц по дням - (3)')
+                        print('Просмотр графика за:\nЗа год в общем - (1)\nЗа год помесячно - (2)\nЗа месяц по дням - (3)')
                         interval = int(input("Выберите режим: "))
                         if interval < 1 or interval > 3:
                             self.incorrect_data()
@@ -54,12 +53,13 @@ class Mode:
                             continue
                         break
 
-                    self.cd.take_period(interval)
-                    formatted_list = self.cd.create_data(interval, overall, mode)
-                    self.g.create_graph_bar(formatted_list)
+                    periods = self.cd.take_period(interval)
+                    formatted_list, label, legend_name = self.cd.create_data(interval, overall, mode)
+                    self.g.create_graph_bar(formatted_list, label, legend_name, interval, periods)
 
             else:
-                print(f'{lg.incorrect_data_lang[self.LANGUAGE]}\n')
+                self.incorrect_data()
+                continue
 
     def incorrect_data(self):
         print(lg.incorrect_data_lang[self.LANGUAGE])

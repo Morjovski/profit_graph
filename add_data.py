@@ -13,6 +13,7 @@ class AddData(db.DataBase):
 
     def add_data(self):
         """Used for adding a new data in SQLite database"""
+        
         db.DataBase.connect(self)
 
         while True:

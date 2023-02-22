@@ -1,7 +1,5 @@
 import sqlite3
 import calendar
-from datetime import datetime
-from tqdm import tqdm
 
 
 class DataBase:
