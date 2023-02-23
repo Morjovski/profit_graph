@@ -32,8 +32,8 @@ class Mode:
                     self.ad.add_data()
                 else:
                     while True:
-                        print('Просмотр графика за:\nЗа год в общем - (1)\nЗа год помесячно - (2)\nЗа месяц по дням - (3)')
-                        interval = int(input("Выберите режим: "))
+                        print(lg.interval_mode_lang[self.LANGUAGE])
+                        interval = int(input(lg.interval_mode_input_lang[self.LANGUAGE]))
                         if interval < 1 or interval > 3:
                             self.incorrect_data()
                             continue
@@ -54,8 +54,8 @@ class Mode:
                         break
 
                     periods = self.cd.take_period(interval)
-                    formatted_list, label, legend_name = self.cd.create_data(interval, overall, mode)
-                    self.g.create_graph_bar(formatted_list, label, legend_name, interval, periods, mode)
+                    formatted_list, label, legend_name, maxval, minval = self.cd.create_data(interval, overall, mode)
+                    self.g.create_graph_bar(formatted_list, label, legend_name, interval, periods, mode, maxval, minval)
 
             else:
                 self.incorrect_data()
