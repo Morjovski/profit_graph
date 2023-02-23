@@ -1,10 +1,13 @@
 import sqlite3
 import calendar
 
+import language as lg
+
 
 class DataBase:
 
-    def __init__(self):
+    def __init__(self, LANGUAGE):
+        self.LANGUAGE = LANGUAGE
         self.year_id = 0
 
     def connect(self):
@@ -37,9 +40,9 @@ class DataBase:
 
     def insert_day(self, day, month, cash, cashless, purchases):
         """Inserts day, month, year_id, cash, cashless and purchases to "days" table"""
-        self.cur.execute("""INSERT INTO days (day, month_id, year_id, cash, cashless, purchases) 
+        self.cur.execute("""INSERT INTO days (day, cash, cashless, purchases, month_id, year_id) 
                             VALUES (?, ?, ?, ?, ?, ?)""",
-                            (day, month, self.year_id, cash, cashless, purchases))
+                            (day, cash, cashless, purchases, month, self.year_id))
 
     def insert_month(self, month):
         """Inserts month id and month name in "months" table"""
@@ -66,7 +69,7 @@ class DataBase:
                                         WHERE days.day = ? AND days.month_id = ?""", (period[8:], period[5:7]))
         for date in duplicate:
             if date[0] == int(period[8:]) and date[1] == int(period[5:7]) and date[2] == self.year_id:
-                print('This date is already in DataBase! Period is not added...')
+                print(lg.date_already_in_DB[self.LANGUAGE])
                 return True
         else:
             return False
@@ -78,3 +81,4 @@ class DataBase:
     def close(self):
         """Close connection with Database"""
         self.cur.close()
+        
