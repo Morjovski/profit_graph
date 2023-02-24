@@ -18,7 +18,7 @@ class DataBase:
         """Create tables in database if they not exists"""
         self.cur.executescript("""
             CREATE TABLE IF NOT EXISTS years (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+            id INTEGER NOT NULL PRIMARY KEY UNIQUE,
             year INTEGER NOT NULL UNIQUE
             );
             
@@ -28,21 +28,24 @@ class DataBase:
             );
             
             CREATE TABLE IF NOT EXISTS days (
-            id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+            id INTEGER NOT NULL PRIMARY KEY UNIQUE,
             day INTEGER,
-            month_id INTEGER,
-            year_id INTEGER,
             cash REAL,
             cashless REAL,
-            purchases INTEGER
+            purchases INTEGER,
+            month_id INTEGER,
+            year_id INTEGER
             );
         """)
 
-    def insert_day(self, day, month, cash, cashless, purchases):
+    def insert_day(self, day, month, cash, cashless, purchases, year):
         """Inserts day, month, year_id, cash, cashless and purchases to "days" table"""
+        year_data = self.cur.execute("SELECT years.id, years.year FROM years WHERE years.year = ?", (year, ))
+        for year in year_data:
+            year_id = year[0]
         self.cur.execute("""INSERT INTO days (day, cash, cashless, purchases, month_id, year_id) 
                             VALUES (?, ?, ?, ?, ?, ?)""",
-                            (day, cash, cashless, purchases, month, self.year_id))
+                            (day, cash, cashless, purchases, month, year_id))
 
     def insert_month(self, month):
         """Inserts month id and month name in "months" table"""
@@ -52,14 +55,14 @@ class DataBase:
     def insert_year(self, year):
         """Inserts year in "years" table"""
         self.cur.execute('INSERT OR IGNORE INTO years (year) VALUES (?)', (year, ))
-        self.check_year_id(year)
+    #     self.check_year_id(year)
 
-    def check_year_id(self, year):
-        """Takes year_id to "days" table"""
-        years_db = self.cur.execute('SELECT years.id, years.year FROM years')
-        for year_db in years_db:
-            if year_db[1] == int(year):
-                self.year_id = year_db[0]
+    # def check_year_id(self, year):
+    #     """Takes year_id to "days" table"""
+    #     years_db = self.cur.execute('SELECT years.id, years.year FROM years')
+    #     for year_db in years_db:
+    #         if year_db[1] == int(year):
+    #             self.year_id = year_db[0]
 
     def duplicate_check(self, period):
         """Check if current period is not in Database"""
