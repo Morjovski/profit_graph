@@ -3,9 +3,9 @@ def choose_language():
         lang = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
         if lang.lower() == 'en' or len(lang) == 0:
             return "EN"
-        elif lang.lower() == 'ru':
+        elif lang.lower() == 'ru' or lang.lower() == 'кг':
             return "RU"
-        elif lang.lower() == 'ua':
+        elif lang.lower() == 'ua' or lang.lower() == 'гф':
             return "UA"
         else:
             print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
@@ -131,9 +131,21 @@ purchases_title_lang = {
 }
 
 hover_annotation_day_lang = {
-    "EN": "Date",
-    "RU": "Дата",
-    "UA": "Дата"    
+    "EN": "Day: ",
+    "RU": "День",
+    "UA": "День"    
+}
+
+hover_annotation_month_lang = {
+    "EN": "Month:",
+    "RU": "Месяц:",
+    "UA": "Місяць:"    
+}
+
+hover_annotation_year_lang = {
+    "EN": "Year:",
+    "RU": "Год:",
+    "UA": "Рік:"    
 }
 
 hover_annotation_value_lang = {
@@ -200,4 +212,16 @@ max_min_period_lang = {
     "EN": "by period",
     "RU": "за период",
     "UA": "за період"
+}
+
+random_year_lang = {
+    "EN": "Enter how much years to generate: ",
+    "RU": "Введите количество лет: ",
+    "UA": "Введіть кількість років: "
+}
+
+randomize_msg_lang = {
+    "EN": "This script generates random values to database, starts from 2020.\nWARNING!\nMaximum amount of years is unlimited!",
+    "RU": "Этот скрипт создаст рандомные значения, начиная с 2020 года.\nВНИМАНИЕ!\nМаксимальное количество лет неограничено!",
+    "UA": "Цей скрипт створює випадкові значення починаючи с 2020 року.\nУВАГА!\nМаксимальная кількість років необмежена!"    
 }
