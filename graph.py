@@ -39,6 +39,7 @@ class Graph(CreateData):
                     legend_max_color = self.colors[i]
                 if values[0] == minval:
                     legend_min_color = self.colors[i]
+
         # For add min/max legend
         if interval == 1:
             for i in range(2):
