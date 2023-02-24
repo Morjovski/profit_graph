@@ -89,9 +89,9 @@ leave_empty_lang = {
 }
 
 incorrect_day_lang = {
-    "EN": "Incorrect day entry!\nEnter date in yyyy-mm format!",
-    "RU": "Некорректный ввод даты!\nВведите дату в формате yyyy-mm!",
-    "UA": "Неправильне введення дати!\nВведіть дату у форматі yyyy-mm!"    
+    "EN": "Incorrect day entry!\nEnter date in yyyy-mm-dd format!",
+    "RU": "Некорректный ввод даты!\nВведите дату в формате гггг-мм-дд!",
+    "UA": "Неправильне введення дати!\nВведіть дату у форматі рррр-мм-дд!"
 }
 
 answer_enter_lang = {
@@ -174,7 +174,7 @@ enter_quit_add_data_lang = {
 
 quit_add_data_lang = {
     "EN": "Back to main menu? Leave blank empty if No, else (1) - Yes: ",
-    "RU": "Вернуться в главное мнею? Оставьте поле пустым если нет, если да - введите что угодно: ",
+    "RU": "Вернуться в главное меню? Оставьте поле пустым если нет, если да - введите что угодно: ",
     "UA": "Повернутись у головне меню? Залиште поле пустим якщо ні, інакше введіть що завгодно: "
 }
 
