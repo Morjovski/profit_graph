@@ -15,7 +15,7 @@ class Mode:
         self.ad = AddData(self.LANGUAGE)
         self.cd = CreateData(self.LANGUAGE)
         self.g = Graph(self.LANGUAGE)
-        self.random = RandomData()
+        self.random = RandomData(self.LANGUAGE)
 
     def select(self):
         """Main menu"""

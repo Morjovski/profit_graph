@@ -28,7 +28,7 @@ class Graph(CreateData):
             x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
             if interval != 1:
                 for x, y in enumerate(values):
-                    ax.bar(x + x_offset, y, label=label[i], width=bar_width * 0.9, color=self.colors[i])
+                    ax.bar(x + x_offset, y, label=label[x], width=bar_width * 0.9, color=self.colors[i])
                     if y == maxval:
                         legend_max_color = self.colors[i]
                     if y == minval:
@@ -65,18 +65,24 @@ class Graph(CreateData):
 
         fig.tight_layout()
 
+        if interval == 1:
+            date = lg.hover_annotation_year_lang[self.LANGUAGE]
+        elif interval == 2:
+            date = lg.hover_annotation_month_lang[self.LANGUAGE]
+        else:
+            date = lg.hover_annotation_day_lang[self.LANGUAGE]
+
         # Hover to show bar values
         cursor = mplcursors.cursor()
 
         @cursor.connect("add")
         def on_add(sel):
             x, y, width, height = sel.artist[sel.index].get_bbox().bounds
-            sel.annotation.set(text=f'\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}\n')
-            sel.annotation.xy = (x + width / 2, y + height / 2)
-            sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.6)
+            sel.annotation.set(text=f'\n{date} {sel.artist.get_label()}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}\n')
+            sel.annotation.xy = (x + width / 2, y + height)
+            sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.8)
 
         plt.subplots_adjust(right=0.7)
-
 
         os.makedirs('graphs/profit', exist_ok=True)
         os.makedirs('graphs/purchases', exist_ok=True)

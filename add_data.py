@@ -29,7 +29,7 @@ class AddData(db.DataBase):
             if duplicate:
                 continue
             else:
-                db.DataBase.insert_day(self, day, month, cash, cashless, purchases)
+                db.DataBase.insert_day(self, day, month, cash, cashless, purchases, year)
             db.DataBase.commit(self)
             quit_add_data = int(input(lg.quit_add_data_lang[self.LANGUAGE]))
             if not quit_add_data:
