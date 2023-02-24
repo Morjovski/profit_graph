@@ -4,11 +4,11 @@ from add_data import AddData
 from graph import Graph
 from create_data import CreateData
 from random_data import RandomData
-
 import language as lg
 
 
 LANGUAGE = 'EN'
+
 
 class Mode:
 
@@ -68,21 +68,5 @@ class Mode:
 
 
 if __name__ == '__main__':
-    
-    while True:
-        LANGUAGE = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
-        if len(LANGUAGE) == 0 or LANGUAGE.lower() == 'en':
-            LANGUAGE = 'EN'
-            break
-        elif LANGUAGE.lower() == 'ru':
-            LANGUAGE = 'RU'
-            break
-        elif LANGUAGE.lower() == 'ua':
-            LANGUAGE = 'UA'
-            break
-        else:
-            print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
-            continue
-
-    gr = Mode(LANGUAGE)
+    gr = Mode()
     gr.select()

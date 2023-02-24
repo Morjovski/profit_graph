@@ -101,7 +101,6 @@ class CreateData(db.DataBase):
             label.append(str(year))
             format_data.append(temp)
         return format_data, label
- 
 
     def collect_months(self, mode):
         """Collecting and formatting data by months"""

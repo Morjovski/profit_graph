@@ -1,10 +1,8 @@
-data.json
 plan.txt
 test.py
 __pycache__/
 graphs/
 .idea/
-open_file.py
 data_backup/
 SQLTest/
 entries.sqlite
