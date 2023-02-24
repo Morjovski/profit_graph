@@ -1,113 +1,235 @@
-import json
 import datetime
-from statistics import mean, StatisticsError
+from statistics import mean
 
+import db
 import language as lg
 
-class CreateData:
+
+class CreateData(db.DataBase):
 
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
-        self.date = []
-        self.profit_start = []
-        self.profit_end = []
-        self.purchases_start = []
-        self.purchases_end = []
-        self.overall_sum_start = 0
-        self.overall_sum_end = 0
-        self.overall_list_start = []
-        self.overall_list_end = []
+        super().__init__(self.LANGUAGE)
+        self.format_data = []
+        self.label = []
 
-    def take_period(self, *periods):
-        '''Optimise dates for next use'''
+    def take_period(self, interval):
+        """Optimise dates for create_data method"""
 
-        self.per_first = ['0' + str(i) if len(str(i)) == 0 else str(i) for i in range(1, 32)]
-        self.start_period = periods[0]
-        self.graph_period_start = datetime.date(int(periods[0][:4]), int(periods[0][5:7]), 1)
-        if len(periods) == 2:
-            self.end_period = periods[1]
-            self.graph_period_end = datetime.date(int(periods[1][:4]), int(periods[1][5:7]), 1)
+        db.DataBase.connect(self)
 
-    def create_data(self, overall, mode):
-        '''Create data for create_graph bar'''
+        if interval == 1:
+            self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
+        elif interval == 2:
+            self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
+        else:
+            self.periods = list(input(lg.enter_month_lang[self.LANGUAGE]).split())
+        return self.periods
 
-        self.overall = overall
-        self.mode = mode
+    def create_data(self, interval, overall, mode):
+        """Create data for create_graph bar"""
 
-        with open('data.json') as f:
-            self.file_data = json.load(f)
+        if interval == 1:
+            format_data, label = self.collect_years(mode)
+        elif interval == 2:
+            format_data, label = self.collect_months(mode)
+        else:
+            format_data, label = self.collect_days(mode)
 
-        for info in self.file_data['data']:
-            if self.start_period in info['day']:
-                self.date.append(info['day'])
-                if self.mode:
-                    self.overall_sum_start += info['purchases']
-                    self.overall_list_start.append(self.overall_sum_start)
-                    self.purchases_start.append(info['purchases'])
+        if overall:
+            format_data = self.overall_sum(format_data, interval)
+
+        legend_name, maxval, minval = self.legend_name(self.periods, format_data, interval, mode)
+
+        return format_data, label, legend_name, maxval, minval
+
+    def overall_sum(self, data, interval):
+        """Making data overall by year/month/day"""
+
+        overall_list = []
+
+        for idx, values in enumerate(data):
+            temp = []
+            if interval == 1:
+                if idx == 0:
+                    overall_list.append(values)
                 else:
-                    self.overall_sum_start += info['cash'] + info['cashless']
-                    self.overall_list_start.append(round(self.overall_sum_start, 2))
-                    self.profit_start.append(round(info['cash'] + info['cashless'], 2))
-            try:
-                if self.end_period:
-                    if self.end_period in info['day']:
-                        if self.mode:
-                            self.overall_sum_end += info['purchases']
-                            self.overall_list_end.append(self.overall_sum_end)
-                            self.purchases_end.append(info['purchases'])
+                    overall_list.append([overall_list[idx - 1][0] + data[idx][0]])
+            else:
+                for index, value in enumerate(values):
+                    if index == 0:
+                        temp.append(value)
+                    else:
+                        temp.append(temp[index - 1] + values[index])
+                overall_list.append(temp)
+
+        return overall_list
+
+    def collect_years(self, mode):
+        """Collecting and formatting data by years"""
+
+        format_data = []
+        label = []
+
+        for period in self.periods:
+            temp = []
+            year = period[:4]
+            raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
+                                FROM days 
+                                JOIN years 
+                                JOIN months 
+                                ON days.month_id == months.id 
+                                AND days.year_id == years.id
+                                AND years.year == ?""", (year, ))  
+            prepare_data = 0
+            for date in raw_data:
+                if int(period[:4]) == date[2]:
+                    if mode:
+                        prepare_data += date[5]
+                    else:
+                        prepare_data += round(date[3] + date[4], 2)
+            temp.append(prepare_data)
+            label.append(str(year))
+            format_data.append(temp)
+        return format_data, label
+ 
+
+    def collect_months(self, mode):
+        """Collecting and formatting data by months"""
+
+        format_data = []
+
+        for period in self.periods:
+            temp = []
+            label = []            
+            year = period[:4]
+            for month in range(1, 13):
+                raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
+                                FROM days 
+                                JOIN years 
+                                JOIN months 
+                                ON days.month_id == months.id 
+                                AND days.year_id == years.id 
+                                AND months.id == ? 
+                                AND years.year == ?""", (month, year))
+                prepare_data = 0
+                for date in raw_data:
+                    if month == date[1] and int(year) == date[2]:
+                        if mode:
+                            prepare_data += date[5]
                         else:
-                            self.overall_sum_end += info['cash'] + info['cashless']
-                            self.overall_list_end.append(round(self.overall_sum_end, 2))
-                            self.profit_end.append(round(info['cash'] + info['cashless'], 2))                        
-            except AttributeError:
-                continue
+                            prepare_data += round(date[3] + date[4], 2)
+                label.append(str(month))
+                temp.append(prepare_data)
+            format_data.append(temp)
+        return format_data, label
 
-    def equalization(self, mode, overall, period):
-        '''Choose right data and generate missing data to create a graph'''
+    def collect_days(self, mode):
+        """Collecting and formatting data by days"""
 
-        info_list = []
-        if period == self.start_period:
-            if overall:
-                info_list = self.overall_list_start
-            else:
-                if mode:
-                    info_list = self.purchases_start
-                else:
-                    info_list = self.profit_start
-        else:
-            if overall:
-                info_list = self.overall_list_end
-            else:
-                if mode:
-                    info_list = self.purchases_end
-                else:
-                    info_list = self.profit_end
-        '''Generates missing dates if days in month less than 31'''
+        format_data = []
+
+        for period in self.periods:
+            temp = []
+            label = []
+            year = period[:4]
+            month = period[5:7]
+            raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
+                                FROM days 
+                                JOIN years 
+                                JOIN months 
+                                ON days.month_id == months.id 
+                                AND days.year_id == years.id 
+                                AND months.id == ? 
+                                AND years.year == ?""", (month, year))
+            for date in raw_data:
+                prepare_data = 0
+                if int(month) == date[1] and int(year) == date[2]:
+                    if mode:
+                        prepare_data += date[5]
+                    else:
+                        prepare_data += round(date[3] + date[4], 2)
+                temp.append(prepare_data)
+            format_data.append(temp)
+
+            # Format days for a proper comparsion in graph
+            for l in format_data:
+                if len(l) < 31:
+                    for _ in range(len(l), 32):
+                        l.append(0)
         
-        for i in range(len(info_list), 31):
-            info_list.append(0)
+        # Create ax labels
+        for day in range(1, 32):
+            label.append(str(day))
 
-        return info_list
+        return format_data, label
 
-    def average(self, mode, period):
-        '''Return average profit or amout of purchases to label'''
+    def average(self, data):
+        """Return average profit or purchases to label"""
+        return round(mean(data), 2)
+    
+    def max_min_value(self, format_data, periods, interval, mode):
+        """Finding max value in formatted data"""
 
-        info = []
-        if period == self.start_period:
-            if mode:
-                info = self.purchases_start
-            else:
-                info = self.profit_start
+        maxval = 0
+        minval = format_data[0][0]
+        if interval == 3:
+            for periods in self.periods:
+                year = periods[:4]
+                month = periods[5:7]
+                raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
+                                    FROM days 
+                                    JOIN years 
+                                    JOIN months 
+                                    ON days.month_id == months.id 
+                                    AND days.year_id == years.id 
+                                    AND months.id == ? 
+                                    AND years.year == ?""", (month, year))
+                for data in raw_data:
+                    if mode:
+                        if maxval < data[5]:
+                            maxval = data[5]
+                            max_period = [data[2], data[1], data[0]]
+                        if minval > data[5]:
+                            minval = data[5]
+                            min_period = [data[2], data[1], data[0]]
+                    else:
+                        if maxval < float(data[3] + data[4]):
+                            maxval = float(data[3] + data[4])
+                            max_period = [data[2], data[1], data[0]]
+                        if minval > float(data[3] + data[4]):
+                            minval = float(data[3] + data[4])
+                            min_period = [data[2], data[1], data[0]]
         else:
-            if mode:
-                info = self.purchases_end
+            for index, data in enumerate(format_data):
+                if max(data) >= maxval:
+                    maxval = max(data)
+                    max_period = [periods[index], data.index(maxval) + 1]
+                if min(data) <= minval:
+                    minval = min(data)
+                    min_period = [periods[index], data.index(minval) + 1]
+        return maxval, max_period, minval, min_period
+    
+    def legend_name(self, periods, format_data, interval, mode):
+        """Creates legend names for graph"""
+
+        legend_list = []
+        for index, period in enumerate(periods):
+            maxval, best_period, minval, worst_period = self.max_min_value(format_data, periods, interval, mode)
+            if interval == 1:
+                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
+                best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
+                worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
+            elif interval == 2:
+                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
+                best_period = datetime.date(int(best_period[0]), int(best_period[1]), 1).strftime('%B %Y')
+                worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), 1).strftime('%B %Y')
             else:
-                info = self.profit_end
-        try:
-            return round(mean(info), 2)
-        except StatisticsError:
-            from main import Mode
-            mode = Mode(self.LANGUAGE)
-            print(lg.does_not_exist_lang[self.LANGUAGE])
-            mode.select()
-            
+                legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
+                best_period = datetime.date(int(best_period[0]), int(best_period[1]), best_period[2])
+                worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), int(worst_period[2]))
+            legend_list.append(legend)
+        legend_list.append('{0} {1} {2} {3}'.format(lg.max_value_lang[self.LANGUAGE], maxval, lg.max_min_period_lang[self.LANGUAGE], best_period))
+        legend_list.append('{0} {1} {2} {3}'.format(lg.min_value_lang[self.LANGUAGE], minval, lg.max_min_period_lang[self.LANGUAGE], worst_period))
+
+        return legend_list, maxval, minval

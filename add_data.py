@@ -1,82 +1,74 @@
-import json
-import os
 import datetime
-import colorama
-from colorama import Fore
 
-from random_data import RandomData
 import language as lg
+import db
 
-class AddData:
+
+class AddData(db.DataBase):
     
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
-        colorama.init(convert=True)
-        self.fn = 'data.json'
-    
+        super().__init__(self.LANGUAGE)
+        self.Flag = False
+
     def add_data(self):
-        '''Used for adding a new data in data.json'''
-        while True:
-            answ_list = AddData.create_answer(self.LANGUAGE)
-            dic = {"day": answ_list[0], "cash": answ_list[1], "cashless": answ_list[2], "purchases": int(answ_list[3])}
-            if not os.path.exists(self.fn):
-                self.create_file(dic, answ_list[0], answ_list[1], answ_list[2], answ_list[3])
-            else:
-                self.update_file(dic, answ_list[0], answ_list[1], answ_list[2], answ_list[3])
-            
-    def update_file(self, dic, day, cash, cashless, purchases):
-        '''Update data.json by adding new data'''
-
-        with open(self.fn, 'r+') as f:
-            fd = json.load(f)
-            f.seek(0)
-            fd["data"].append(dic)
-            json.dump(fd, f, indent=4)
-            print(lg.update_file_lang[self.LANGUAGE])
-            print()
-
-    def create_file(self, dic, day, cash, cashless, purchases):
-        '''Creates data.json if the file not exist then add first data'''
+        """Used for adding a new data in SQLite database"""
         
-        start_file = {"data": [dic]}
-        with open(self.fn, 'w') as f:
-            json.dump(start_file, f, indent=4)
-            print(lg.create_file_lang[self.LANGUAGE])
-            print()
-    
-    def create_answer(LANGUAGE):
+        db.DataBase.connect(self)
+
+        while True:
+            period, cash, cashless, purchases = AddData.create_answer(self, self.LANGUAGE)
+            year, month, day = period[:4], period[5:7], period[8:]
+            if self.Flag:
+                db.DataBase.close(self)
+                break
+            db.DataBase.create(self)
+            db.DataBase.insert_year(self, year)
+            db.DataBase.insert_month(self, month)
+            duplicate = db.DataBase.duplicate_check(self, period)
+            if duplicate:
+                continue
+            else:
+                db.DataBase.insert_day(self, day, month, cash, cashless, purchases, year)
+            db.DataBase.commit(self)
+            quit_add_data = int(input(lg.quit_add_data_lang[self.LANGUAGE]))
+            if not quit_add_data:
+                continue
+            else:
+                db.DataBase.close(self)
+                break
+
+    def create_answer(self, LANGUAGE):
+        """Collect necessary data"""
         enter = lg.create_file_enter_lang[LANGUAGE]
         answ_list = []
         print(lg.enter_quit_add_data_lang[LANGUAGE])
-        random = input(f"{lg.create_file_random_lang[LANGUAGE]}")
-        if random.lower() == 'random':
-            random_data = RandomData()
-            random_data.randomize()
-            AddData.continue_graph(LANGUAGE)
-        elif random.lower() == 'q':
-            AddData.continue_graph(LANGUAGE)
         for index, variable in enumerate(enter):
             if index == 0:
                 while True:
                     print(lg.leave_empty_lang[LANGUAGE])
                     day = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if day == 'q':
-                        AddData.back_main_menu(LANGUAGE)
-                    try:
-                        day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
-                    except ValueError as e:
-                        if len(day) == 0:
-                            day = datetime.datetime.now().date()
-                        else:
-                            print(lg.incorrect_day_lang[LANGUAGE])
-                            continue
-                    answ_list.append(str(day))
-                    break
+                        self.Flag = True
+                        break
+                    else:
+                        try:
+                            day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
+                        except ValueError:
+                            if len(day) == 0:
+                                day = datetime.datetime.now().date()
+                                print(str(day))
+                            else:
+                                print(lg.incorrect_day_lang[LANGUAGE])
+                                continue
+                        answ_list.append(str(day))
+                        break
             else:
                 while True:
                     answ = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
                     if answ == 'q':
-                        AddData.back_main_menu(LANGUAGE)
+                        self.Flag = True
+                        break
                     try:
                         answ = float(answ)
                     except ValueError:
@@ -84,14 +76,6 @@ class AddData:
                         continue
                     answ_list.append(answ)
                     break
+            if self.Flag:
+                break
         return answ_list
-
-    def back_main_menu(LANGUAGE):
-        from main import Mode
-        n = int(input(f'{lg.back_to_main_menu_lang[LANGUAGE]}'))
-        if n:
-            n += 1
-            Mode(LANGUAGE).select()
-        else:
-            quit()
-

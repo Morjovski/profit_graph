@@ -1,8 +1,8 @@
 import matplotlib.pyplot as plt
-import numpy as np
-from create_data import CreateData
 import mplcursors
+import os
 
+from create_data import CreateData
 import language as lg
 
 
@@ -12,109 +12,83 @@ class Graph(CreateData):
         self.LANGUAGE = LANGUAGE
         super().__init__(LANGUAGE)
         plt.style.use('_mpl-gallery')
-        self.first_color = '#2D2926FF'
-        self.second_color = '#E94B3CFF'
+        self.colors = [plt.cm.tab10(i) for i in range(12)]
         plt.rcParams["figure.autolayout"] = True
 
-    def create_graph(self, pur_or_pro):
-        '''Create one period graph by days in plot(x, y) style'''
-
-        fig, ax = plt.subplots()
-        fig.set_size_inches(10, 8)
-
-        dt = plt.scatter(self.date, pur_or_pro, c=self.second_color, marker='o', label=f'Среднее значение: {self.average(self.mode, self.start_period)}')
-
-        if self.overall:
-            if max(pur_or_pro) <= 100:
-                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, max(pur_or_pro) + 10, 1))
-            elif max(pur_or_pro) <= 500:
-                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, max(pur_or_pro) + 25, 25))
-            elif max(pur_or_pro) <= 5000:
-                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, max(pur_or_pro) + 100, 250))
-            else:
-                ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                    yticks=np.arange(0, max(pur_or_pro) + 1000, 2500))
-        else:
-            ax.set(xlim=(0, len(self.date) - 1), xticks=np.arange(0, len(self.date)),
-                yticks=np.arange(0, (max(pur_or_pro) + 100 if max(pur_or_pro) > 100 else max(pur_or_pro) + 1), (200 if max(pur_or_pro) > 50 else 1)))
-
-        ax.set_ylabel((lg.profit_label_lang[self.LANGUAGE] if max(pur_or_pro) > 1000 else lg.purchases_label_lang[self.LANGUAGE]))
-        ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
-        ax.set_title(f"{lg.profit_title_lang[self.LANGUAGE] if max(pur_or_pro) > 1000 else lg.purchases_title_lang[self.LANGUAGE]}) {self.graph_period_start.strftime('%B %Y')}")
-
-        ax.legend(loc=2)
-
-        plt.setp(ax.get_xticklabels(), rotation=30, ha="right")
-
-        cursor = mplcursors.cursor(dt, hover='True')
-        @cursor.connect("add")
-        def on_add(sel):
-            xi, yi = sel.target
-            xi = int(round(xi))
-            sel.annotation.set_text(f'{lg.hover_annotation_day_lang[self.LANGUAGE]}: {self.date[xi]}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {yi}')
-            sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.6)
-
-        plt.plot(self.date, pur_or_pro, color=self.first_color, alpha=0.5)
-
-        fig.savefig(f"graphs/{('profit' if max(pur_or_pro) > 1000 else 'purchases')}_{self.graph_period_start}.png", bbox_inches='tight')
-        plt.show()
-
-    def create_graph_bar(self, mode, overall):
-        '''Compare two periods by grouped bar chart style'''
+    def create_graph_bar(self, formatted_list, label, legend_name, interval, periods, mode, maxval, minval):
+        """Compare two periods by grouped bar chart style"""
         
-        start_period = self.equalization(mode, overall, self.start_period)
-        end_period = self.equalization(mode, overall, self.end_period)
-        max_value = max(max(start_period), max(end_period))
-
-        if mode:
-            label_start = f"{self.graph_period_start.strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(self.mode, self.start_period)}"
-            label_end = f"{self.graph_period_end.strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(self.mode, self.end_period)}"
-        else:
-            label_start = f"{self.graph_period_start.strftime('%B %Y')}, {lg.average_profit_lang[self.LANGUAGE]} {self.average(self.mode, self.start_period)}"
-            label_end = f"{self.graph_period_end.strftime('%B %Y')}, {lg.average_profit_lang[self.LANGUAGE]} {self.average(self.mode, self.end_period)}"
-
-        x = np.arange(len(self.per_first))
-        width = 0.45
         fig, ax = plt.subplots()
-        fig.set_size_inches(15, 10)
+        fig.set_size_inches(20, 10)
+        n_bars = len(formatted_list)
+        total_width = 0.8
+        bar_width = total_width / n_bars
 
-        rects1 = ax.bar(x - width/2, start_period, width, label=label_start, color = self.first_color)
-        rects2 = ax.bar(x + width/2, end_period, width, label=label_end, color = self.second_color)
-
-        ax.set_ylabel(lg.purchases_label_lang[self.LANGUAGE] if mode else lg.profit_label_lang[self.LANGUAGE])
-        ax.set_title(f"{lg.purchases_title_lang[self.LANGUAGE]} {self.graph_period_start.strftime('%B %Y')} - {self.graph_period_end.strftime('%B %Y')}"
-                     if mode else f"{lg.profit_title_lang[self.LANGUAGE]} {self.graph_period_start.strftime('%B %Y')} - {self.graph_period_end.strftime('%B %Y')}")
-        ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
-        ax.set_xticks(x, self.per_first)
+        for i, values in enumerate(formatted_list):
+            x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
+            if interval != 1:
+                for x, y in enumerate(values):
+                    ax.bar(x + x_offset, y, label=label[x], width=bar_width * 0.9, color=self.colors[i])
+                    if y == maxval:
+                        legend_max_color = self.colors[i]
+                    if y == minval:
+                        legend_min_color = self.colors[i]
+            else:
+                ax.bar(i, values, label=label[i], width=bar_width * 0.9, color=self.colors[i])
+                if values[0] == maxval:
+                    legend_max_color = self.colors[i]
+                if values[0] == minval:
+                    legend_min_color = self.colors[i]
+        # For add min/max legend
+        if interval == 1:
+            for i in range(2):
+                plt.bar(i, 0, color='none')
 
         if mode:
-            if overall:
-                ax.set_yticks(np.arange(0, (max_value // 100) * 100 + 200, 50))
-            else:
-                ax.set_yticks(np.arange(0, (max_value // 10) * 10 + 20, 5))
+            ax.set_title(f"{lg.purchases_title_lang[self.LANGUAGE]} {' '.join(periods)}")
+            ax.set_ylabel(lg.purchases_label_lang[self.LANGUAGE])
         else:
-            if overall:
-                ax.set_yticks(np.arange(0, (max_value // 10000) * 10000 + 20000, 2500))
-            else:
-                ax.set_yticks(np.arange(0, (max_value // 1000) * 1000 + 2000, 500))
+            ax.set_title(f"{lg.profit_title_lang[self.LANGUAGE]} {' '.join(periods)}")
+            ax.set_ylabel(lg.profit_label_lang[self.LANGUAGE])
+        ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
 
-        ax.legend(loc=2)
+        plt.xticks(range(len(label)), label)
+
+        leg = plt.legend(legend_name, loc='center left', bbox_to_anchor=(1, 0.5))
+
+        # Create a legend color
+        for i, j in enumerate(leg.legendHandles):
+            j.set_color(self.colors[i])
+        # To set min max color exactly the same as min max period
+        leg.legendHandles[-2].set_color(legend_max_color)
+        leg.legendHandles[-1].set_color(legend_min_color)
 
         fig.tight_layout()
 
-        cursor = mplcursors.cursor([rects1, rects2], hover='True')
+        if interval == 1:
+            date = lg.hover_annotation_year_lang[self.LANGUAGE]
+        elif interval == 2:
+            date = lg.hover_annotation_month_lang[self.LANGUAGE]
+        else:
+            date = lg.hover_annotation_day_lang[self.LANGUAGE]
+
+        # Hover to show bar values
+        cursor = mplcursors.cursor()
+
         @cursor.connect("add")
         def on_add(sel):
             x, y, width, height = sel.artist[sel.index].get_bbox().bounds
-            sel.annotation.set(text=f'{lg.hover_annotation_day_lang[self.LANGUAGE]}: {self.date[sel.index][-2:]}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}', position=(0, 20), anncoords="offset points")
+            sel.annotation.set(text=f'\n{date} {sel.artist.get_label()}\n{lg.hover_annotation_value_lang[self.LANGUAGE]} {height}\n')
             sel.annotation.xy = (x + width / 2, y + height)
-            sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.6)
-            
+            sel.annotation.get_bbox_patch().set(fc='#F2EDD7FF', alpha=0.8)
+
+        plt.subplots_adjust(right=0.7)
+
+        os.makedirs('graphs/profit', exist_ok=True)
+        os.makedirs('graphs/purchases', exist_ok=True)
         if mode:
-            fig.savefig(f"graphs/purchases_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
+            plt.savefig(f"graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
         else:
-            fig.savefig(f"graphs/profit_{self.graph_period_start.strftime('%B %Y')}-{self.graph_period_end.strftime('%B %Y')}.png", bbox_inches='tight')
+            plt.savefig(f"graphs/profit/profit_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
+
         plt.show()
