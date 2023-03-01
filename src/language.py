@@ -113,19 +113,19 @@ profit_label_lang = {
 }
 
 purchases_label_lang = {
-    "EN": "Amount of purchases",
+    "EN": "Number of sales",
     "RU": "Количество продаж",
     "UA": "Кількість продажів"    
 }
 
 profit_title_lang = {
-    "EN": "Profit amount in",
+    "EN": "Profit in",
     "RU": "Доход за",
     "UA": "Прибуток за"    
 }
 
 purchases_title_lang = {
-    "EN": "Amount of purchases in",
+    "EN": "Number of sales by",
     "RU": "Количество продаж за",
     "UA": "Кількість продажів за"    
 }

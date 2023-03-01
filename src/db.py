@@ -10,7 +10,7 @@ class DataBase:
         self.LANGUAGE = LANGUAGE
 
     def connect(self):
-        self.conn = sqlite3.connect('entries.sqlite')
+        self.conn = sqlite3.connect('Database\\entries.sqlite')
         self.cur = self.conn.cursor()
 
     def create(self):

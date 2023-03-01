@@ -20,19 +20,16 @@ class CreateData(db.DataBase):
 
         if interval == 1:
             self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
-            if len(self.periods) <= 3:
-                self.periods = list(datetime.datetime.now().strftime('%Y'))
-                print(f'Выбран период за {self.periods[0]} год')
+            if len(self.periods) < 1:
+                self.periods.append(datetime.datetime.now().strftime('%Y'))
         elif interval == 2:
             self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
-            if len(self.periods) <= 3:
-                self.periods = list(datetime.datetime.now().strftime('%Y'))
-                print(f'Выбран период за {self.periods[0]} год')
+            if len(self.periods) < 1:
+                self.periods.append(datetime.datetime.now().strftime('%Y'))
         else:
             self.periods = list(input(lg.enter_month_lang[self.LANGUAGE]).split())
-            if len(self.periods) <= 6:
-                self.periods = list(datetime.datetime.now().strftime('%Y-%m'))
-                print(f'Выбран период за {self.periods[0]} год')
+            if len(self.periods) < 1:
+                self.periods.append(datetime.datetime.now().strftime('%Y-%m'))
         return self.periods
 
     def create_data(self, interval, overall, mode):
