@@ -2,7 +2,7 @@
 
 This program will help you by show your profit or number of purchases in your company by days, months and years!
 The project was created for the purpose of learning Python and gaining knowledge in OOP, so the functionality is not powerfull.
-Programm use [matplotlib](https://matplotlib.org/), [mplcursors](https://mplcursors.readthedocs.io/en/stable/) and [tqdm](https://tqdm.github.io/).
+Program use [matplotlib](https://matplotlib.org/), [mplcursors](https://mplcursors.readthedocs.io/en/stable/) and [tqdm](https://tqdm.github.io/).
 
 ### What the program can do:
 1. Use three languages (EN/UA/RU)
