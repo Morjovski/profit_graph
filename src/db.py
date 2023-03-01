@@ -1,5 +1,6 @@
 import sqlite3
 import calendar
+import pathlib
 
 import language as lg
 
@@ -10,6 +11,7 @@ class DataBase:
         self.LANGUAGE = LANGUAGE
 
     def connect(self):
+        pathlib.Path('Database/').mkdir(parents=True, exist_ok=True) 
         self.conn = sqlite3.connect('Database\\entries.sqlite')
         self.cur = self.conn.cursor()
 
