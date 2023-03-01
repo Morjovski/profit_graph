@@ -10,6 +10,7 @@ def choose_language():
         else:
             print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
 
+
 interval_mode_lang = {
     "EN": "Build graph by:\nYears at all - (1)\nYear by months - (2)\nMonths by days - (3)",
     "RU": "Просмотр графика за:\nЗа года в общем - (1)\nЗа года помесячно - (2)\nЗа месяцы по дням - (3)",

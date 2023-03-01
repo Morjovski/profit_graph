@@ -16,7 +16,7 @@ class CreateData(db.DataBase):
     def take_period(self, interval):
         """Optimise dates for create_data method"""
 
-        db.DataBase.connect(self)
+        self.connect()
 
         if interval == 1:
             self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
@@ -79,7 +79,7 @@ class CreateData(db.DataBase):
 
         for period in self.periods:
             temp = []
-            year = period[:4]
+            year = int(period[:4])
             raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
                                 FROM days 
                                 JOIN years 
@@ -89,7 +89,7 @@ class CreateData(db.DataBase):
                                 AND years.year == ?""", (year, ))  
             prepare_data = 0
             for date in raw_data:
-                if int(period[:4]) == date[2]:
+                if year == date[2]:
                     if mode:
                         prepare_data += date[5]
                     else:

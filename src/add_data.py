@@ -14,28 +14,28 @@ class AddData(db.DataBase):
     def add_data(self):
         """Used for adding a new data in SQLite database"""
         
-        db.DataBase.connect(self)
+        self.connect()
 
         while True:
             period, cash, cashless, purchases = AddData.create_answer(self, self.LANGUAGE)
             year, month, day = period[:4], period[5:7], period[8:]
             if self.Flag:
-                db.DataBase.close(self)
+                self.close()
                 break
-            db.DataBase.create(self)
-            db.DataBase.insert_year(self, year)
-            db.DataBase.insert_month(self, month)
-            duplicate = db.DataBase.duplicate_check(self, period)
+            self.create()
+            self.insert_year(year)
+            self.insert_month(month)
+            duplicate = self.duplicate_check(period)
             if duplicate:
                 continue
             else:
-                db.DataBase.insert_day(self, day, month, cash, cashless, purchases, year)
-            db.DataBase.commit(self)
+                self.insert_day(day, month, cash, cashless, purchases, year)
+            self.commit()
             quit_add_data = input(lg.quit_add_data_lang[self.LANGUAGE])
             if not quit_add_data:
                 continue
             else:
-                db.DataBase.close(self)
+                self.close()
                 break
 
     def create_answer(self, LANGUAGE):
