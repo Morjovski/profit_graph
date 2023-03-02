@@ -9,7 +9,8 @@ color_reset = colorama.Fore.RESET
 
 def choose_language():
     while True:
-        lang = input('\nChoose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
+        lang = input(f'\nChoose a language\nВыберите язык\nОберіть мову\n'
+                     f'{yellow}EN{color_reset}/{yellow}RU{color_reset}/{yellow}UA{color_reset}: ')
         if lang.lower() == 'en' or len(lang) == 0:
             return "EN"
         elif lang.lower() == 'ru' or lang.lower() == 'кг':
@@ -63,9 +64,9 @@ overall_mode_purchases_lang = {
 }
 
 incorrect_data_lang = {
-    "EN": f"\n{red}Incorrect data entry!{color_reset}\n",
-    "RU": f"\n{red}Некорректный ввод данных!{color_reset}\n",
-    "UA": f"\n{red}Неправильне введення даних!{color_reset}\n" 
+    "EN": f"\n{red}Incorrect data entry!{color_reset}",
+    "RU": f"\n{red}Некорректный ввод данных!{color_reset}",
+    "UA": f"\n{red}Неправильне введення даних!{color_reset}"
 }
 
 update_file_lang = {
@@ -194,6 +195,18 @@ enter_quit_add_data_lang = {
     "UA": f"\nВведіть '{yellow}q{color_reset}' для виходу з режиму додавання в будь-який момент!"    
 }
 
+back_main_menu_lang = {
+    "EN": f"\nEnter '{yellow}q{color_reset}' to go back to main menu at any time!",
+    "RU": f"\nВведите '{yellow}q{color_reset}' в любой момент для выхода главное меню!",
+    "UA": f"\nВведіть '{yellow}q{color_reset}' для виходу у головне меню в будь-який момент!"
+}
+
+quit_program_lang = {
+    "EN": f"\nEnter '{yellow}quit{color_reset}' to shutdown the program!",
+    "RU": f"\nВведите '{yellow}quit{color_reset}' для закрытия программы!",
+    "UA": f"\nВведіть '{yellow}quit{color_reset}' для виходу з програми!"
+}
+
 quit_add_data_lang = {
     "EN": f"\nBack to main menu? Leave blank {yellow}empty{color_reset} if No, else entry {yellow}everything{color_reset}: ",
     "RU": f"\nВернуться в главное меню? Оставьте поле {yellow}пустым{color_reset} если нет, если да - введите {yellow}что угодно{color_reset}: ",
@@ -270,4 +283,34 @@ int_value_lang = {
     "EN": f"You need to enter a {yellow}natural{color_reset} number!",
     "RU": f"Нужно ввести {yellow}целое{color_reset} число!",
     "UA": f"Потрібно ввести {yellow}ціле{color_reset} число!"
+}
+
+img_save_lang = {
+    "EN": f"is {green}successfully saved{color_reset} into '{yellow}graphs{color_reset}' folder!",
+    "RU": f"{green}успешно сохранён{color_reset} в папку '{yellow}graphs{color_reset}'!",
+    "UA": f"{green}успішно збережено{color_reset} у папку '{yellow}graphs{color_reset}'!"
+}
+
+success_random_data_lang = {
+    "EN": f"\nRandom data is {green}successfully{color_reset} created in database!\n",
+    "RU": f"\nСлучайные данные {green}успешно{color_reset} добавлены в базу данных!\n",
+    "UA": f"\nВипадкові дані {green}успішно{color_reset} додані у базу даних\n"
+}
+
+exit_program_lang = {
+    "EN": "Shutting down...",
+    "RU": "Программа закрывается...",
+    "UA": "Програма зачиняється..."
+}
+
+incorrect_year_lang = {
+    "EN": f"\n{red}Incorrect periods format!{color_reset} Enter dates in format ({yellow}yyyy{color_reset}) separated by space!",
+    "RU": f"\n{red}Неправильно введенные периоды!{color_reset} Введите даты в формате ({yellow}гггг{color_reset}), которые разделенные пробелом!",
+    "UA": f"\n{red}Невірно введені періоди!{color_reset} Введіть дати у форматі ({yellow}рррр{color_reset}), які розділені пробілом!"
+}
+
+incorrect_year_month_lang = {
+    "EN": f"\n{red}Incorrect periods format!{color_reset} Enter dates in format ({yellow}yyyy-mm{color_reset}) separated by space!",
+    "RU": f"\n{red}Неправильно введенные периоды!{color_reset} Введите даты в формате ({yellow}гггг-мм{color_reset}), которые разделены пробелом!",
+    "UA": f"\n{red}Невірно введені періоди!{color_reset} Введіть дати у форматі ({yellow}рррр-мм{color_reset}), які розділені пробілом!"
 }

@@ -1,23 +1,27 @@
 # About
 
-This program will help you by show your profit or number of purchases in your company by days, months and years!
-The project was created for the purpose of learning Python and gaining knowledge in OOP, so the functionality is not powerfull.
-Program use [matplotlib](https://matplotlib.org/), [mplcursors](https://mplcursors.readthedocs.io/en/stable/) and [tqdm](https://tqdm.github.io/).
+This program will help you showcase the profits and purchases of your company by days, months and years! Create your own database, choose personalized options and compare the data to analyse your business outcomes just in a few clicks! 
 
-### What the program can do:
-1. Use three languages (EN/UA/RU)
-2. Add data to database
-3. Create graph by options
-4. Show max and min data
-5. Save your graphs in 'graph/' directory
-6. Create random data
-    - To use this, just enter 'random' while you choose add data or create graph
+#### What the program can do:
+1. Uses three languages (EN/UA/RU)
+2. Adds data to database
+3. Creates graph by options
+4. Shows max and min data
+5. Saves your graphs in 'graph/' directory
+6. Creates random data
+    * To use this, just enter 'random' while you choose 'add data' or 'create graph'
+
+#### Used libraries:
+* [matplotlib](https://github.com/matplotlib/matplotlib)
+* [mplcursors](https://github.com/anntzer/mplcursors)
+* [tqdm](https://github.com/tqdm/tqdm)
+* [colorama](https://github.com/tartley/colorama)
 
 ## Install
 
 Clone this repository:
 ```
->>> git clone https://github.com/Morjovski/profit_graph.git
+git clone https://github.com/Morjovski/profit_graph.git
 ```
 GitHub CLI:
 ```
@@ -42,7 +46,7 @@ To launch the program, use:
 
 ## License
 
-This project is licensed under the MIT License. See LICENSE.md for more information
+See LICENSE.md for more information
 
 ## Special thanks
 
