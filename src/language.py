@@ -1,6 +1,15 @@
+import colorama
+
+colorama.init()
+
+yellow = colorama.Fore.YELLOW
+red = colorama.Fore.RED
+green = colorama.Fore.GREEN
+color_reset = colorama.Fore.RESET
+
 def choose_language():
     while True:
-        lang = input('Choose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
+        lang = input('\nChoose a language\nВыберите язык\nОберіть мову\nEN/RU/UA: ')
         if lang.lower() == 'en' or len(lang) == 0:
             return "EN"
         elif lang.lower() == 'ru' or lang.lower() == 'кг':
@@ -8,12 +17,13 @@ def choose_language():
         elif lang.lower() == 'ua' or lang.lower() == 'гф':
             return "UA"
         else:
-            print('Incorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
+            print('\nIncorrect lang select!\nВведены неправилные данные!\nВведено неправильні дані!')
+
 
 interval_mode_lang = {
-    "EN": "Build graph by:\nYears at all - (1)\nYear by months - (2)\nMonths by days - (3)",
-    "RU": "Просмотр графика за:\nЗа года в общем - (1)\nЗа года помесячно - (2)\nЗа месяцы по дням - (3)",
-    "UA": "Дивитись графік за:\nЗа роки в цілому - (1)\nЗа роки помісячно - (2)\nЗа місяці по днях - (3)"
+    "EN": f"\nBuild graph by:\nYears at all - ({yellow}1{color_reset})\nYear by months - ({yellow}2{color_reset})\nMonths by days - ({yellow}3{color_reset})",
+    "RU": f"\nПросмотр графика за:\nЗа года в общем - ({yellow}1{color_reset})\nЗа года помесячно - ({yellow}2{color_reset})\nЗа месяцы по дням - ({yellow}3{color_reset})",
+    "UA": f"\nДивитись графік за:\nЗа роки в цілому - ({yellow}1{color_reset})\nЗа роки помісячно - ({yellow}2{color_reset})\nЗа місяці по днях - ({yellow}3{color_reset})"
 }
 
 interval_mode_input_lang = {
@@ -23,75 +33,93 @@ interval_mode_input_lang = {
 }
 
 input_mode_lang = {
-    "EN": "Enter data (1)\nBuild a graph (2): ",
-    "RU": "Ввод прибыли (1)\nПостроить график (2): ",
-    "UA": "Введеня прибутку (1)\nПобудувати графік (2): "
+    "EN": f"\nEnter data ({yellow}1{color_reset})\nBuild a graph ({yellow}2{color_reset}): ",
+    "RU": f"\nВвод прибыли ({yellow}1{color_reset})\nПостроить график ({yellow}2{color_reset}): ",
+    "UA": f"\nВведеня прибутку ({yellow}1{color_reset})\nПобудувати графік ({yellow}2{color_reset}): "
 }
 
 no_file_data_lang = {
-    "EN": "There is no database file! Enter the data below",
-    "RU": "Файл базы данных ещё не создан! Введите данные ниже для создания",
-    "UA": "Файла бази даних ще не створено! Введіть дані нижче для створення файлу"
+    "EN": f"\nThere is {red}no database file{color_reset}! Enter the first data below",
+    "RU": f"\nФайл базы данных ещё {red}не создан{color_reset}! Введите данные ниже для создания",
+    "UA": f"\nФайла бази даних ще {red}не створено{color_reset}! Введіть дані нижче для створення файлу"
 }
 
 purchase_profit_mode_lang = {
-    "EN": "Show profit (0), Show Purchases (1): ",
-    "RU": "Просмотр прибыли (0), просмотр кол-ва продаж (1): ",
-    "UA": "Дивитись прибуток (0), дивитись кількість продаж (1): "
+    "EN": f"\nShow profit ({yellow}1{color_reset}), Show Purchases ({yellow}2{color_reset}): ",
+    "RU": f"\nПросмотр прибыли ({yellow}1{color_reset}), просмотр кол-ва продаж ({yellow}2{color_reset}): ",
+    "UA": f"\nДивитись прибуток ({yellow}1{color_reset}), дивитись кількість продаж ({yellow}2{color_reset}): "
 }
 
 overall_mode_profit_lang = {
-    "EN": "Overall profit at period? Yes (1), No (0): ",
-    "RU": "Общая прибыль за период? Да (1), Нет(0): ",
-    "UA": "Загальний прибуток за період? Так (1), Ні (0): "
+    "EN": f"\nOverall profit at period? Yes ({yellow}1{color_reset}), No ({yellow}2{color_reset}): ",
+    "RU": f"\nОбщая прибыль за период? Да ({yellow}1{color_reset}), Нет({yellow}2{color_reset}): ",
+    "UA": f"\nЗагальний прибуток за період? Так ({yellow}1{color_reset}), Ні ({yellow}2{color_reset}): "
 }
 
 overall_mode_purchases_lang = {
-    "EN": "Overall amount of purchases at period? Yes (1), No (0): ",
-    "RU": "Общее количество продаж за период? Да (1), Нет (0): ",
-    "UA": "Загальний кількість продаж за період? Так (1), Ні (0): "
+    "EN": f"\nOverall amount of purchases at period? Yes ({yellow}1{color_reset}), No ({yellow}2{color_reset}): ",
+    "RU": f"\nОбщее количество продаж за период? Да ({yellow}1{color_reset}), Нет ({yellow}2{color_reset}): ",
+    "UA": f"\nЗагальний кількість продаж за період? Так ({yellow}1{color_reset}), Ні ({yellow}2{color_reset}): "
 }
 
 incorrect_data_lang = {
-    "EN": "Incorrect data entry!",
-    "RU": "Некорректный ввод данных!",
-    "UA": "Неправильне введення даних!" 
+    "EN": f"\n{red}Incorrect data entry!{color_reset}\n",
+    "RU": f"\n{red}Некорректный ввод данных!{color_reset}\n",
+    "UA": f"\n{red}Неправильне введення даних!{color_reset}\n" 
 }
 
 update_file_lang = {
-    "EN": "Database file successfully updated with data above!",
-    "RU": "Файл базы данных успешно обновлён с введёнными выше значениями!",
-    "UA": "Файл бази даних успішно оновлений з вищевказаними значеннями!"    
+    "EN": f"\nDatabase file {green}successfully updated{color_reset} with data above!",
+    "RU": f"\nФайл базы данных {green}успешно обновлён{color_reset} с введёнными выше значениями!",
+    "UA": f"\nФайл бази даних {green}успішно оновлено{color_reset} з вищевказаними значеннями!"    
 }
 
 create_file_lang = {
-    "EN": "Database file file successfully created with data above! ",
-    "RU": "Файл базы данных успешно создан с введёнными выше значениями! ",
-    "UA": "Файл бази даних успішно створено з вищевказаними значеннями! "    
+    "EN": f"\nDatabase file {green}successfully created{color_reset} with data above! ",
+    "RU": f"\nФайл базы данных {green}успешно создан{color_reset} с введёнными выше значениями! ",
+    "UA": f"\nФайл бази даних {green}успішно створено{color_reset} з вищевказаними значеннями! "    
 }
 
 create_file_enter_lang = {
-    "EN": ['day', 'cash profit', 'cashless profit', 'purchases'],
-    "RU": ['день', 'прибыль наличными', 'прибыль безналичными', 'продажи'],
-    "UA": ['день', 'прибуток готівкою', 'безготівковий прибуток', 'продажі']  
+    "EN": [f'{yellow}day{color_reset}', f'{yellow}cash profit{color_reset}', f'{yellow}cashless profit{color_reset}', f'{yellow}purchases{color_reset}'],
+    "RU": [f'{yellow}день{color_reset}', f'{yellow}прибыль наличными{color_reset}', f'{yellow}прибыль безналичными{color_reset}', f'{yellow}продажи{color_reset}'],
+    "UA": [f'{yellow}день{color_reset}', f'{yellow}прибуток готівкою{color_reset}', f'{yellow}безготівковий прибуток{color_reset}', f'{yellow}продажі{color_reset}']  
+}
+
+day_format_lang = {
+    "EN": f"in ({yellow}yyyy-mm-dd{color_reset}) format: ",
+    "RU": f"в формате ({yellow}гггг-мм-дд{color_reset}): ",
+    "UA": f"у форматі ({yellow}рррр-мм-дд{color_reset}: "
+}
+
+correct_day_format_lang = {
+    "EN": f"You need to enter day in a ({yellow}yyyy-mm-dd{color_reset}) format!",
+    "RU": f"Необходимо ввести дату в формате ({yellow}гггг-мм-дд{color_reset})!",
+    "UA": f"Потрібно ввести день у форматі ({yellow}рррр-мм-дд{color_reset})!"
+}
+
+auto_day_enter_lang = {
+    "EN": "The selected date is",
+    "RU": "Выбранная дата -",
+    "UA": "Обрана дата -"
 }
 
 create_file_random_lang = {
-    "EN": "Enter 'random' for generate random data: ",
-    "RU": "Введите 'random' для генерации случайных данных: ",
-    "UA": "Введіть 'random' для генерації довільних даних: "    
+    "EN": f"\nEnter '{yellow}random{color_reset}' for generate random data: ",
+    "RU": f"\nВведите '{yellow}random{color_reset}' для генерации случайных данных: ",
+    "UA": f"\nВведіть '{yellow}random{color_reset}' для генерації довільних даних: "    
 }
 
 leave_empty_lang = {
-    "EN": "Leave blank if the date is today!",
-    "RU": "Оставьте пустым если дата текущая!",
-    "UA": "Не пишіть нічого якщо дата поточна!"    
+    "EN": f"{yellow}Leave blank empty{color_reset} if the date is today!",
+    "RU": f"{yellow}Оставьте пустым{color_reset} если дата текущая!",
+    "UA": f"{yellow}Не пишіть нічого{color_reset} якщо дата поточна!"    
 }
 
 incorrect_day_lang = {
-    "EN": "Incorrect day entry!\nEnter date in yyyy-mm-dd format!",
-    "RU": "Некорректный ввод даты!\nВведите дату в формате гггг-мм-дд!",
-    "UA": "Неправильне введення дати!\nВведіть дату у форматі рррр-мм-дд!"
+    "EN": f"\n{red}Incorrect day entry!{color_reset}\nEnter date in {yellow}yyyy-mm-dd{color_reset} format!\n",
+    "RU": f"\n{red}Некорректный ввод даты!{color_reset}\nВведите дату в формате {yellow}гггг-мм-дд{color_reset}!\n",
+    "UA": f"\n{red}Неправильне введення дати!{color_reset}\nВведіть дату у форматі {yellow}рррр-мм-дд{color_reset}!\n"
 }
 
 answer_enter_lang = {
@@ -100,16 +128,10 @@ answer_enter_lang = {
     "UA": "Введіть"    
 }
 
-does_not_exist_lang = {
-    "EN": "\nTime period not found in database file!\nReturn to main menu...",
-    "RU": "\nПериод не найден в базе данных!\nВозврат в главное меню...",
-    "UA": "\nВказаний період не знайдено у базі даних!\nВихід у головне меню..."    
-}
-
 profit_label_lang = {
-    "EN": "Profit, c.u.",
-    "RU": "Доход, у.е.",
-    "UA": "Прибуток, у.о."    
+    "EN": "Profit (c.u.)",
+    "RU": "Доход (у.е.)",
+    "UA": "Прибуток (грн)"    
 }
 
 purchases_label_lang = {
@@ -132,8 +154,8 @@ purchases_title_lang = {
 
 hover_annotation_day_lang = {
     "EN": "Day: ",
-    "RU": "День",
-    "UA": "День"    
+    "RU": "День:",
+    "UA": "День:"    
 }
 
 hover_annotation_month_lang = {
@@ -167,33 +189,33 @@ average_purchases_lang = {
 }
 
 enter_quit_add_data_lang = {
-    "EN": "Enter 'q' to exit add data mode at any time!",
-    "RU": "Введите 'q' в любой момент для выхода из режима добавления!",
-    "UA": "Введіть 'q' для виходу з режиму додавання в будь-який момент!"    
+    "EN": f"\nEnter '{yellow}q{color_reset}' to exit add data mode at any time!",
+    "RU": f"\nВведите '{yellow}q{color_reset}' в любой момент для выхода из режима добавления!",
+    "UA": f"\nВведіть '{yellow}q{color_reset}' для виходу з режиму додавання в будь-який момент!"    
 }
 
 quit_add_data_lang = {
-    "EN": "Back to main menu? Leave blank empty if No, else (1) - Yes: ",
-    "RU": "Вернуться в главное меню? Оставьте поле пустым если нет, если да - введите что угодно: ",
-    "UA": "Повернутись у головне меню? Залиште поле пустим якщо ні, інакше введіть що завгодно: "
+    "EN": f"\nBack to main menu? Leave blank {yellow}empty{color_reset} if No, else entry {yellow}everything{color_reset}: ",
+    "RU": f"\nВернуться в главное меню? Оставьте поле {yellow}пустым{color_reset} если нет, если да - введите {yellow}что угодно{color_reset}: ",
+    "UA": f"\nПовернутись у головне меню? Залиште поле {yellow}пустим{color_reset} якщо ні, інакше введіть {yellow}що завгодно{color_reset}: "
 }
 
 date_already_in_DB = {
-    "EN": "This date is already in database! Period is not added...",
-    "RU": "Дата уже есть в базе данных! Период не добавлен...",
-    "UA": "Ці дані вже існують в базі Дданих! Період не додано..."
+    "EN": f"\n{red}This date is already in database!{color_reset}\nPeriod is not added...",
+    "RU": f"\n{red}Дата уже есть в базе данных!{color_reset}\nПериод не добавлен...",
+    "UA": f"\n{red}Ці дані вже існують в базі Даних!{color_reset}\nПеріод не додано..."
 }
 
 enter_years_lang = {
-    "EN": "Enter periods in format (yyyy): ",
-    "RU": "Введите периоды в формате (гггг): ",
-    "UA": "Введіть періоди у форматі (рррр): "
+    "EN": f"\nEnter periods in format ({yellow}yyyy{color_reset}) separated by a space: ",
+    "RU": f"\nВведите периоды в формате ({yellow}гггг{color_reset}) через пробел: ",
+    "UA": f"\nВведіть періоди у форматі ({yellow}рррр{color_reset}) через пропуск: "
 }
 
 enter_month_lang = {
-    "EN": "Enter periods in format (yyyy-mm): ",
-    "RU": "Введите периоды в формате (гггг-мм): ",
-    "UA": "Введіть періоди у форматі (рррр-мм): "
+    "EN": f"\nEnter periods in format ({yellow}yyyy-mm{color_reset}) separated by a space: ",
+    "RU": f"\nВведите периоды в формате ({yellow}гггг-мм{color_reset}) через пробел: ",
+    "UA": f"\nВведіть періоди у форматі ({yellow}рррр-мм{color_reset}) через пропуск: "
 }
 
 max_value_lang = {
@@ -215,13 +237,37 @@ max_min_period_lang = {
 }
 
 random_year_lang = {
-    "EN": "Enter how much years to generate: ",
-    "RU": "Введите количество лет: ",
-    "UA": "Введіть кількість років: "
+    "EN": "\nEnter how much years to generate: ",
+    "RU": "\nВведите количество лет: ",
+    "UA": "\nВведіть кількість років: "
 }
 
 randomize_msg_lang = {
-    "EN": "This script generates random values to database, starts from 2020.\nWARNING!\nMaximum amount of years is unlimited!",
-    "RU": "Этот скрипт создаст рандомные значения, начиная с 2020 года.\nВНИМАНИЕ!\nМаксимальное количество лет неограничено!",
-    "UA": "Цей скрипт створює випадкові значення починаючи с 2020 року.\nУВАГА!\nМаксимальная кількість років необмежена!"    
+    "EN": f"\nThis script generates random values to database, starts from {yellow}2020{color_reset}.\n{red}WARNING!{color_reset}\nMaximum amount of years is unlimited!",
+    "RU": f"\nЭтот скрипт создаст рандомные значения, начиная с {yellow}2020{color_reset} года.\n{red}ВНИМАНИЕ!{color_reset}\nМаксимальное количество лет неограничено!",
+    "UA": f"\nЦей скрипт створює випадкові значення починаючи с {yellow}2020{color_reset} року.\n{red}УВАГА!{color_reset}\nМаксимальная кількість років необмежена!"    
+}
+
+success_add_data_lang = {
+    "EN": f"\nThe day has been {green}successfully added{color_reset}!",
+    "RU": f"\nДень {green}успешно добавлен{color_reset} в базу данных!",
+    "UA": f"\nДень {green}успішно додано{color_reset} до бази даних!"
+}
+
+select_language_lang = {
+    "EN": f"\n{green}English has been selected.{color_reset}",
+    "RU": f"\n{green}Выбран русский язык.{color_reset}",
+    "UA": f"\n{green}Обрана українська мова.{color_reset}"
+}
+
+float_value_lang = {
+    "EN": f"You need to enter a {yellow}real{color_reset} number or {yellow}natural{color_reset} number!",
+    "RU": f"Нужно ввести {yellow}вещественное{color_reset} или {yellow}натуральное{color_reset} число!",
+    "UA": f"Потрібно ввести {yellow}дійсне{color_reset} чи {yellow}натуральне{color_reset} число!"
+}
+
+int_value_lang = {
+    "EN": f"You need to enter a {yellow}natural{color_reset} number!",
+    "RU": f"Нужно ввести {yellow}целое{color_reset} число!",
+    "UA": f"Потрібно ввести {yellow}ціле{color_reset} число!"
 }

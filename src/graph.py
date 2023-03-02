@@ -45,11 +45,11 @@ class Graph(CreateData):
             for i in range(2):
                 plt.bar(i, 0, color='none')
 
-        if mode:
-            ax.set_title(f"{lg.purchases_title_lang[self.LANGUAGE]} {' '.join(periods)}")
+        if mode == 1:
+            ax.set_title(f"{lg.purchases_title_lang[self.LANGUAGE]} {', '.join(periods)}")
             ax.set_ylabel(lg.purchases_label_lang[self.LANGUAGE])
         else:
-            ax.set_title(f"{lg.profit_title_lang[self.LANGUAGE]} {' '.join(periods)}")
+            ax.set_title(f"{lg.profit_title_lang[self.LANGUAGE]} {', '.join(periods)}")
             ax.set_ylabel(lg.profit_label_lang[self.LANGUAGE])
         ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
 
@@ -87,7 +87,7 @@ class Graph(CreateData):
 
         os.makedirs('graphs/profit', exist_ok=True)
         os.makedirs('graphs/purchases', exist_ok=True)
-        if mode:
+        if mode == 1:
             plt.savefig(f"graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
         else:
             plt.savefig(f"graphs/profit/profit_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
