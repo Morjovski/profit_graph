@@ -11,11 +11,11 @@ class Graph(CreateData):
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
         super().__init__(LANGUAGE)
-        plt.style.use('_mpl-gallery')
         self.colors = [plt.cm.tab10(i) for i in range(12)]
+        plt.style.use('_mpl-gallery')
         plt.rcParams["figure.autolayout"] = True
 
-    def create_graph_bar(self, formatted_list, label, legend_name, interval, periods, mode, maxval, minval):
+    def create_graph_bar(self, formatted_list, label, legend_name, interval, periods, mode, maxval, minval, overall):
         """Compare two periods by grouped bar chart style"""
         
         fig, ax = plt.subplots()
@@ -29,16 +29,18 @@ class Graph(CreateData):
             if interval != 1:
                 for x, y in enumerate(values):
                     ax.bar(x + x_offset, y, label=label[x], width=bar_width * 0.9, color=self.colors[i])
-                    if y == maxval:
-                        legend_max_color = self.colors[i]
-                    if y == minval:
-                        legend_min_color = self.colors[i]
+                    if overall == 2:
+                        if y == maxval:
+                            legend_max_color = self.colors[i]
+                        if y == minval:
+                            legend_min_color = self.colors[i]
             else:
                 ax.bar(i, values, label=label[i], width=bar_width * 0.9, color=self.colors[i])
-                if values[0] == maxval:
-                    legend_max_color = self.colors[i]
-                if values[0] == minval:
-                    legend_min_color = self.colors[i]
+                if overall == 2:
+                    if values[0] == maxval:
+                        legend_max_color = self.colors[i]
+                    if values[0] == minval:
+                        legend_min_color = self.colors[i]
 
         # For add min/max legend
         if interval == 1:
@@ -60,9 +62,11 @@ class Graph(CreateData):
         # Create a legend color
         for i, j in enumerate(leg.legendHandles):
             j.set_color(self.colors[i])
+
         # To set min max color exactly the same as min max period
-        leg.legendHandles[-2].set_color(legend_max_color)
-        leg.legendHandles[-1].set_color(legend_min_color)
+        if overall == 2:
+            leg.legendHandles[-2].set_color(legend_max_color)
+            leg.legendHandles[-1].set_color(legend_min_color)
 
         fig.tight_layout()
 
@@ -89,7 +93,9 @@ class Graph(CreateData):
         os.makedirs('graphs/purchases', exist_ok=True)
         if mode == 1:
             plt.savefig(f"graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
+            print(f"'purchases_graph_{'_'.join(periods)}.png' {lg.img_save_lang[self.LANGUAGE]}")
         else:
             plt.savefig(f"graphs/profit/profit_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
+            print(f"'profit_graph_{'_'.join(periods)}.png' {lg.img_save_lang[self.LANGUAGE]}")
 
         plt.show()

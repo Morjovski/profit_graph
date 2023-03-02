@@ -31,3 +31,4 @@ class RandomData(db.DataBase):
                     self.insert_day(day, intmonth, cash, cashless, purchases, intyear)
             self.commit()
         self.close()
+        print(lg.success_random_data_lang[self.LANGUAGE])

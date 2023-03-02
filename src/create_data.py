@@ -18,19 +18,57 @@ class CreateData(db.DataBase):
 
         self.connect()
 
-        if interval == 1:
-            self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
-            if len(self.periods) < 1:
-                self.periods.append(datetime.datetime.now().strftime('%Y'))
-        elif interval == 2:
-            self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
-            if len(self.periods) < 1:
-                self.periods.append(datetime.datetime.now().strftime('%Y'))
-        else:
-            self.periods = list(input(lg.enter_month_lang[self.LANGUAGE]).split())
-            if len(self.periods) < 1:
-                self.periods.append(datetime.datetime.now().strftime('%Y-%m'))
+        while True:
+            if interval == 1:
+                self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
+                if len(self.periods) < 1:
+                    self.periods.append(datetime.datetime.now().strftime('%Y'))
+                    break
+                else:
+                    Flag = self.check_period()
+                    if Flag:
+                        print(lg.incorrect_year_lang[self.LANGUAGE])
+                        continue
+                    else:
+                        break
+            elif interval == 2:
+                self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
+                if len(self.periods) < 1:
+                    self.periods.append(datetime.datetime.now().strftime('%Y'))
+                    break
+                else:
+                    Flag = self.check_period()
+                    if Flag:
+                        print(lg.incorrect_year_lang[self.LANGUAGE])
+                        continue
+                    else:
+                        break
+            else:
+                self.periods = list(input(lg.enter_month_lang[self.LANGUAGE]).split())
+                if len(self.periods) < 1:
+                    self.periods.append(datetime.datetime.now().strftime('%Y-%m'))
+                    break
+                else:
+                    Flag = self.check_period(interval)
+                    if Flag:
+                        print(lg.incorrect_year_month_lang[self.LANGUAGE])
+                        continue
+                    else:
+                        break
         return self.periods
+
+    def check_period(self, interval=0):
+        Flag = False
+        for period in self.periods:
+            try:
+                if interval == 3:
+                    datetime.date(int(period[:4]), int(period[5:7]), 1)
+                else:
+                    datetime.date(int(period), 1, 1)
+            except ValueError:
+                Flag = True
+                break
+        return Flag
 
     def create_data(self, interval, overall, mode):
         """Create data for create_graph bar"""
@@ -45,7 +83,7 @@ class CreateData(db.DataBase):
         if overall == 1:
             format_data = self.overall_sum(format_data, interval)
 
-        legend_name, maxval, minval = self.legend_name(self.periods, format_data, interval, mode)
+        legend_name, maxval, minval = self.legend_name(self.periods, format_data, interval, mode, overall)
 
         return format_data, label, legend_name, maxval, minval
 
@@ -85,7 +123,7 @@ class CreateData(db.DataBase):
                                 JOIN months 
                                 ON days.month_id == months.id 
                                 AND days.year_id == years.id
-                                AND years.year == ?""", (year, ))  
+                                AND years.year == ?""", (year, ))
             prepare_data = 0
             for date in raw_data:
                 if year == date[2]:
@@ -193,47 +231,56 @@ class CreateData(db.DataBase):
                     if mode == 2:
                         if maxval < data[5]:
                             maxval = data[5]
-                            max_period = [data[2], data[1], data[0]]
+                            best_period = [data[2], data[1], data[0]]
                         if minval > data[5]:
                             minval = data[5]
-                            min_period = [data[2], data[1], data[0]]
+                            worst_period = [data[2], data[1], data[0]]
                     else:
                         if maxval < float(data[3] + data[4]):
                             maxval = float(data[3] + data[4])
-                            max_period = [data[2], data[1], data[0]]
+                            best_period = [data[2], data[1], data[0]]
                         if minval > float(data[3] + data[4]):
                             minval = float(data[3] + data[4])
-                            min_period = [data[2], data[1], data[0]]
+                            worst_period = [data[2], data[1], data[0]]
         else:
             for index, data in enumerate(format_data):
                 if max(data) >= maxval:
                     maxval = max(data)
-                    max_period = [periods[index], data.index(maxval) + 1]
+                    best_period = [periods[index], data.index(maxval) + 1]
                 if min(data) <= minval:
                     minval = min(data)
-                    min_period = [periods[index], data.index(minval) + 1]
-        return maxval, max_period, minval, min_period
+                    worst_period = [periods[index], data.index(minval) + 1]
+        return maxval, best_period, minval, worst_period
     
-    def legend_name(self, periods, format_data, interval, mode):
+    def legend_name(self, periods, format_data, interval, mode, overall):
         """Creates legend names for graph"""
 
+        maxval, minval = 0, 0
         legend_list = []
+
         for index, period in enumerate(periods):
-            maxval, best_period, minval, worst_period = self.max_min_value(format_data, periods, interval, mode)
+            if overall == 2:
+                maxval, best_period, minval, worst_period = self.max_min_value(format_data, periods, interval, mode)
             if interval == 1:
                 legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
-                best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
-                worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
+                if overall == 2:
+                    best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
+                    worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
             elif interval == 2:
                 legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
-                best_period = datetime.date(int(best_period[0]), int(best_period[1]), 1).strftime('%B %Y')
-                worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), 1).strftime('%B %Y')
+                if overall == 2:
+                    best_period = datetime.date(int(best_period[0]), int(best_period[1]), 1).strftime('%B %Y')
+                    worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), 1).strftime('%B %Y')
             else:
                 legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
-                best_period = datetime.date(int(best_period[0]), int(best_period[1]), best_period[2])
-                worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), int(worst_period[2]))
+                if overall == 2:
+                    best_period = datetime.date(int(best_period[0]), int(best_period[1]), best_period[2])
+                    worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), int(worst_period[2]))
             legend_list.append(legend)
-        legend_list.append('{0} {1} {2} {3}'.format(lg.max_value_lang[self.LANGUAGE], maxval, lg.max_min_period_lang[self.LANGUAGE], best_period))
-        legend_list.append('{0} {1} {2} {3}'.format(lg.min_value_lang[self.LANGUAGE], minval, lg.max_min_period_lang[self.LANGUAGE], worst_period))
+        if overall == 2:
+            legend_list.append('{0} {1} {2} {3}'.format(lg.max_value_lang[self.LANGUAGE], maxval,
+                                                        lg.max_min_period_lang[self.LANGUAGE], best_period))
+            legend_list.append('{0} {1} {2} {3}'.format(lg.min_value_lang[self.LANGUAGE], minval,
+                                                        lg.max_min_period_lang[self.LANGUAGE], worst_period))
 
         return legend_list, maxval, minval

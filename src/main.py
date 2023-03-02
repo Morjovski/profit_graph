@@ -19,15 +19,20 @@ class Mode:
         self.cd = CreateData(self.LANGUAGE)
         self.g = Graph(self.LANGUAGE)
         self.random = RandomData(self.LANGUAGE)
+        print(lg.select_language_lang[self.LANGUAGE])
 
     def select(self):
         """Main menu"""
 
-        print(lg.select_language_lang[self.LANGUAGE])
         while True:
+            print(lg.quit_program_lang[self.LANGUAGE])
             n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
             if n.lower() == 'random':
                 self.random.randomize()
+            elif n.lower() == 'quit':
+                print(lg.exit_program_lang[self.LANGUAGE])
+                sleep(1.5)
+                quit()
             elif n == '1':
                 self.ad.add_data()
             elif n == '2':
@@ -35,10 +40,14 @@ class Mode:
                     print(lg.no_file_data_lang[self.LANGUAGE])
                     self.ad.add_data()
                 else:
+                    print(lg.back_main_menu_lang[self.LANGUAGE])
                     while True:
                         print(lg.interval_mode_lang[self.LANGUAGE])
+                        interval = input(lg.interval_mode_input_lang[self.LANGUAGE])
+                        if interval == 'q':
+                            self.select()
                         try:
-                            interval = int(input(lg.interval_mode_input_lang[self.LANGUAGE]))
+                            interval = int(interval)
                         except ValueError:
                             self.incorrect_data()
                             continue
@@ -47,8 +56,11 @@ class Mode:
                             continue
                         break
                     while True:
+                        mode = input(f'{lg.purchase_profit_mode_lang[self.LANGUAGE]}')
+                        if mode == 'q':
+                            self.select()
                         try:
-                            mode = int(input(f'{lg.purchase_profit_mode_lang[self.LANGUAGE]}'))
+                            mode = int(mode)
                         except ValueError:
                             self.incorrect_data()
                             continue
@@ -57,8 +69,11 @@ class Mode:
                             continue
                         break
                     while True:
+                        overall = input(lg.overall_mode_purchases_lang[self.LANGUAGE] if mode else lg.overall_mode_profit_lang[self.LANGUAGE])
+                        if overall == 'q':
+                            self.select()
                         try:
-                            overall = int(input(lg.overall_mode_purchases_lang[self.LANGUAGE] if mode else lg.overall_mode_profit_lang[self.LANGUAGE]))
+                            overall = int(overall)
                         except ValueError:
                             self.incorrect_data()
                             continue
@@ -69,7 +84,7 @@ class Mode:
 
                     periods = self.cd.take_period(interval)
                     formatted_list, label, legend_name, maxval, minval = self.cd.create_data(interval, overall, mode)
-                    self.g.create_graph_bar(formatted_list, label, legend_name, interval, periods, mode, maxval, minval)
+                    self.g.create_graph_bar(formatted_list, label, legend_name, interval, periods, mode, maxval, minval, overall)
 
             else:
                 self.incorrect_data()
