@@ -1,4 +1,5 @@
 import os
+from time import sleep
 
 from add_data import AddData
 from graph import Graph
@@ -22,6 +23,7 @@ class Mode:
     def select(self):
         """Main menu"""
 
+        print(lg.select_language_lang[self.LANGUAGE])
         while True:
             n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
             if n.lower() == 'random':
@@ -35,22 +37,32 @@ class Mode:
                 else:
                     while True:
                         print(lg.interval_mode_lang[self.LANGUAGE])
-                        interval = int(input(lg.interval_mode_input_lang[self.LANGUAGE]))
-                        if interval < 1 or interval > 3:
+                        try:
+                            interval = int(input(lg.interval_mode_input_lang[self.LANGUAGE]))
+                        except ValueError:
+                            self.incorrect_data()
+                            continue
+                        if not 1 <= interval <= 3:
                             self.incorrect_data()
                             continue
                         break
                     while True:
-                        mode = int(input(f'{lg.purchase_profit_mode_lang[self.LANGUAGE]}'))
-                        if mode > 1:
+                        try:
+                            mode = int(input(f'{lg.purchase_profit_mode_lang[self.LANGUAGE]}'))
+                        except ValueError:
+                            self.incorrect_data()
+                            continue
+                        if not 1 <= mode <= 2:
                             self.incorrect_data()
                             continue
                         break
                     while True:
-                        overall = int(
-                            input(lg.overall_mode_purchases_lang[self.LANGUAGE] if mode else lg.overall_mode_profit_lang[self.LANGUAGE])
-                        )
-                        if overall > 1:
+                        try:
+                            overall = int(input(lg.overall_mode_purchases_lang[self.LANGUAGE] if mode else lg.overall_mode_profit_lang[self.LANGUAGE]))
+                        except ValueError:
+                            self.incorrect_data()
+                            continue
+                        if not 1 <= overall <= 2:
                             self.incorrect_data()
                             continue
                         break
@@ -65,6 +77,7 @@ class Mode:
 
     def incorrect_data(self):
         print(lg.incorrect_data_lang[self.LANGUAGE])
+        sleep(1)
 
 
 if __name__ == '__main__':

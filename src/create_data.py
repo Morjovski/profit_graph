@@ -42,7 +42,7 @@ class CreateData(db.DataBase):
         else:
             format_data, label = self.collect_days(mode)
 
-        if overall:
+        if overall == 1:
             format_data = self.overall_sum(format_data, interval)
 
         legend_name, maxval, minval = self.legend_name(self.periods, format_data, interval, mode)
@@ -68,7 +68,6 @@ class CreateData(db.DataBase):
                     else:
                         temp.append(temp[index - 1] + values[index])
                 overall_list.append(temp)
-
         return overall_list
 
     def collect_years(self, mode):
@@ -90,7 +89,7 @@ class CreateData(db.DataBase):
             prepare_data = 0
             for date in raw_data:
                 if year == date[2]:
-                    if mode:
+                    if mode == 2:
                         prepare_data += date[5]
                     else:
                         prepare_data += round(date[3] + date[4], 2)
@@ -120,7 +119,7 @@ class CreateData(db.DataBase):
                 prepare_data = 0
                 for date in raw_data:
                     if month == date[1] and int(year) == date[2]:
-                        if mode:
+                        if mode == 2:
                             prepare_data += date[5]
                         else:
                             prepare_data += round(date[3] + date[4], 2)
@@ -150,7 +149,7 @@ class CreateData(db.DataBase):
             for date in raw_data:
                 prepare_data = 0
                 if int(month) == date[1] and int(year) == date[2]:
-                    if mode:
+                    if mode == 2:
                         prepare_data += date[5]
                     else:
                         prepare_data += round(date[3] + date[4], 2)
@@ -176,7 +175,7 @@ class CreateData(db.DataBase):
     def max_min_value(self, format_data, periods, interval, mode):
         """Finding max value in formatted data"""
 
-        maxval = 0
+        maxval = 1
         minval = format_data[0][0]
         if interval == 3:
             for periods in self.periods:
@@ -191,7 +190,7 @@ class CreateData(db.DataBase):
                                     AND months.id == ? 
                                     AND years.year == ?""", (month, year))
                 for data in raw_data:
-                    if mode:
+                    if mode == 2:
                         if maxval < data[5]:
                             maxval = data[5]
                             max_period = [data[2], data[1], data[0]]
