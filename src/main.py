@@ -83,8 +83,8 @@ class Mode:
                         break
 
                     periods = self.cd.take_period(interval)
-                    formatted_list, label, legend_name, maxval, minval = self.cd.create_data(interval, overall, mode)
-                    self.g.create_graph_bar(formatted_list, label, legend_name, interval, periods, mode, maxval, minval, overall)
+                    format_data, label, legend_name, maxval, minval = self.cd.create_data(interval, overall, mode)
+                    self.g.create_graph_bar(format_data, label, legend_name, interval, periods, mode, maxval, minval, overall)
 
             else:
                 self.incorrect_data()
