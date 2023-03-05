@@ -7,8 +7,9 @@ This program will help you showcase the profits and purchases of your company by
 2. Adds data to database
 3. Creates graph by options
 4. Shows max and min data
-5. Saves your graphs in 'graph/' directory
-6. Creates random data
+5. Shows average by period
+6. Saves your graphs in 'graph/' directory
+7. Creates random data
     * To use this, just enter 'random' while you choose 'add data' or 'create graph'
 
 #### Used libraries:
@@ -29,13 +30,13 @@ gh repo clone Morjovski/profit_graph
 ```
 For install dependencies change your directory to profit_graph folder and use pip install requirements:
 ```
->>> pip install -r requirements.txt
+pip install -r requirements.txt
 ```
 ## Launch
-To launch the program, use:
+To launch the program, change directory to src and launch a main.py:
 ```
->>> cd src
->>> python main.py
+cd src
+python main.py
 ```
 
 ## Examples
