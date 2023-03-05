@@ -49,10 +49,10 @@ class Mode:
                         try:
                             interval = int(interval)
                         except ValueError:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         if not 1 <= interval <= 3:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         break
                     while True:
@@ -65,7 +65,7 @@ class Mode:
                             self.incorrect_data()
                             continue
                         if not 1 <= mode <= 2:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         break
                     while True:
@@ -75,10 +75,10 @@ class Mode:
                         try:
                             overall = int(overall)
                         except ValueError:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         if not 1 <= overall <= 2:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         break
 
@@ -87,10 +87,10 @@ class Mode:
                     self.g.create_graph_bar(format_data, label, legend_name, interval, periods, mode, maxval, minval, overall)
 
             else:
-                self.incorrect_data()
+                self._incorrect_data()
                 continue
 
-    def incorrect_data(self):
+    def _incorrect_data(self):
         print(lg.incorrect_data_lang[self.LANGUAGE])
         sleep(1)
 

@@ -19,7 +19,7 @@ class AddData(db.DataBase):
 
         while True:
             try:
-                period, cash, cashless, purchases = self.create_answer(self.LANGUAGE)
+                period, cash, cashless, purchases = self._create_answer(self.LANGUAGE)
             except ValueError:
                 if self.Flag:
                     self.close()
@@ -43,7 +43,7 @@ class AddData(db.DataBase):
                 self.close()
                 break
 
-    def create_answer(self, LANGUAGE):
+    def _create_answer(self, LANGUAGE):
         """Collect necessary data"""
 
         self.Flag = False

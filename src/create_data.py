@@ -10,8 +10,6 @@ class CreateData(db.DataBase):
     def __init__(self, LANGUAGE):
         self.LANGUAGE = LANGUAGE
         super().__init__(self.LANGUAGE)
-        self.format_data = []
-        self.label = []
 
     def take_period(self, interval):
         """Optimise dates for create_data method"""
@@ -25,7 +23,7 @@ class CreateData(db.DataBase):
                     self.periods.append(datetime.datetime.now().strftime('%Y'))
                     break
                 else:
-                    Flag = self.check_period()
+                    Flag = self._check_period()
                     if Flag:
                         print(lg.incorrect_year_lang[self.LANGUAGE])
                         continue
@@ -37,7 +35,7 @@ class CreateData(db.DataBase):
                     self.periods.append(datetime.datetime.now().strftime('%Y'))
                     break
                 else:
-                    Flag = self.check_period()
+                    Flag = self._check_period()
                     if Flag:
                         print(lg.incorrect_year_lang[self.LANGUAGE])
                         continue
@@ -49,7 +47,7 @@ class CreateData(db.DataBase):
                     self.periods.append(datetime.datetime.now().strftime('%Y-%m'))
                     break
                 else:
-                    Flag = self.check_period(interval)
+                    Flag = self._check_period(interval)
                     if Flag:
                         print(lg.incorrect_year_month_lang[self.LANGUAGE])
                         continue
@@ -57,7 +55,9 @@ class CreateData(db.DataBase):
                         break
         return self.periods
 
-    def check_period(self, interval=0):
+    def _check_period(self, interval=0):
+        """Check if period is period, not anything else"""
+
         Flag = False
         for period in self.periods:
             try:
@@ -74,20 +74,19 @@ class CreateData(db.DataBase):
         """Create data for create_graph bar"""
 
         if interval == 1:
-            format_data, label = self.collect_years(mode)
+            format_data, label = self._collect_years(mode)
         elif interval == 2:
-            format_data, label = self.collect_months(mode)
+            format_data, label = self._collect_months(mode)
         else:
-            format_data, label = self.collect_days(mode)
+            format_data, label = self._collect_days(mode)
 
         if overall == 1:
-            format_data = self.overall_sum(format_data, interval)
+            format_data = self._overall_sum(format_data, interval)
 
-        legend_name, maxval, minval = self.legend_name(self.periods, format_data, interval, mode, overall)
-
+        legend_name, maxval, minval = self._legend_name(self.periods, format_data, interval, mode, overall)
         return format_data, label, legend_name, maxval, minval
 
-    def overall_sum(self, data, interval):
+    def _overall_sum(self, data, interval):
         """Making data overall by year/month/day"""
 
         overall_list = []
@@ -114,7 +113,7 @@ class CreateData(db.DataBase):
                 overall_list.append(temp)
         return overall_list
 
-    def collect_years(self, mode):
+    def _collect_years(self, mode):
         """Collecting and formatting data by years"""
 
         format_data = []
@@ -142,7 +141,7 @@ class CreateData(db.DataBase):
             format_data.append(temp)
         return format_data, label
 
-    def collect_months(self, mode):
+    def _collect_months(self, mode):
         """Collecting and formatting data by months"""
 
         format_data = []
@@ -172,7 +171,7 @@ class CreateData(db.DataBase):
             format_data.append(temp)
         return format_data, label
 
-    def collect_days(self, mode):
+    def _collect_days(self, mode):
         """Collecting and formatting data by days"""
 
         format_data = []
@@ -196,7 +195,7 @@ class CreateData(db.DataBase):
                     if mode == 2:
                         prepare_data += date[5]
                     else:
-                        prepare_data += round(date[3] + date[4], 2)
+                        prepare_data += date[3] + date[4]
                 temp.append(round(prepare_data, 2))
             format_data.append(temp)
 
@@ -209,10 +208,9 @@ class CreateData(db.DataBase):
         # Create ax labels
         for day in range(1, 32):
             label.append(str(day))
-
         return format_data, label
 
-    def average(self, format_data):
+    def _average(self, format_data):
         """Return average profit or purchases to label"""
         ctr = 0
         allsum = 0
@@ -226,7 +224,7 @@ class CreateData(db.DataBase):
             avg = 0
         return round(avg, 2)
     
-    def max_min_value(self, format_data, periods, interval, mode):
+    def _max_min_value(self, format_data, periods, interval, mode):
         """Finding max value in formatted data"""
 
         maxval = 1
@@ -235,8 +233,8 @@ class CreateData(db.DataBase):
         worst_period = ['1970', '1', '1']
         if interval == 3:
             for periods in self.periods:
-                year = periods[:4]
-                month = periods[5:7]
+                period_year = periods[:4]
+                period_month = periods[5:7]
                 raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
                                     FROM days 
                                     JOIN years 
@@ -244,34 +242,36 @@ class CreateData(db.DataBase):
                                     ON days.month_id == months.id 
                                     AND days.year_id == years.id 
                                     AND months.id == ? 
-                                    AND years.year == ?""", (month, year))
+                                    AND years.year == ?""", (period_month, period_year))
                 for data in raw_data:
+                    day, month, year = data[0], data[1], data[2]
+                    cash, cashless, purchases = data[3], data[4], data[5]
                     if mode == 2:
-                        if maxval < data[5]:
-                            maxval = data[5]
-                            best_period = [data[2], data[1], data[0]]
-                        if minval >= data[5] and data[5] > 0:
-                            minval = data[5]
-                            worst_period = [data[2], data[1], data[0]]
+                        if maxval < purchases:
+                            maxval = purchases
+                            best_period = [year, month, day]
+                        if minval >= purchases and purchases > 0:
+                            minval = purchases
+                            worst_period = [year, month, day]
                     else:
-                        if maxval < data[3] + data[4]:
-                            maxval = data[3] + data[4]
-                            best_period = [data[2], data[1], data[0]]
-                        if minval >= data[3] + data[4] and data[3] + data[4] > 0:
-                            minval = data[3] + data[4]
-                            worst_period = [data[2], data[1], data[0]]
+                        if maxval < cash + cashless:
+                            maxval = round(cash + cashless, 2)
+                            best_period = [year, month, day]
+                        if minval >= cash + cashless and cash + cashless > 0:
+                            minval = round(cash + cashless, 2)
+                            worst_period = [year, month, day]
         else:
             for index, data in enumerate(format_data):
-                for idx, minmax in enumerate(data):
+                for minmax in data:
                     if maxval <= minmax:
-                        maxval = minmax
+                        maxval = round(minmax, 2)
                         best_period = [periods[index], data.index(maxval) + 1]
                     if minval >= minmax and minmax > 0:
-                        minval = minmax
+                        minval = round(minmax, 2)
                         worst_period = [periods[index], data.index(minval) + 1]
-        return round(maxval, 2), best_period, round(minval, 2), worst_period
+        return maxval, best_period, minval, worst_period
     
-    def legend_name(self, periods, format_data, interval, mode, overall):
+    def _legend_name(self, periods, format_data, interval, mode, overall):
         """Creates legend names for graph"""
 
         maxval, minval = 0, 0
@@ -279,27 +279,30 @@ class CreateData(db.DataBase):
 
         for index, period in enumerate(periods):
             if overall == 2:
-                maxval, best_period, minval, worst_period = self.max_min_value(format_data, periods, interval, mode)
+                maxval, best_period, minval, worst_period = self._max_min_value(format_data, periods, interval, mode)
             if interval == 1:
-                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
+                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self._average(format_data[index])}"
                 if overall == 2:
                     best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
                     worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
             elif interval == 2:
-                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
+                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self._average(format_data[index])}"
                 if overall == 2:
                     best_period = datetime.date(int(best_period[0]), int(best_period[1]), 1).strftime('%B %Y')
                     worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), 1).strftime('%B %Y')
             else:
-                legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self.average(format_data[index])}"
+                legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, {lg.average_purchases_lang[self.LANGUAGE]} {self._average(format_data[index])}"
                 if overall == 2:
                     best_period = datetime.date(int(best_period[0]), int(best_period[1]), best_period[2])
                     worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), int(worst_period[2]))
             legend_list.append(legend)
         if overall == 2:
-            legend_list.append('{0} {1} {2} {3}'.format(lg.max_value_lang[self.LANGUAGE], maxval,
-                                                        lg.max_min_period_lang[self.LANGUAGE], best_period))
-            legend_list.append('{0} {1} {2} {3}'.format(lg.min_value_lang[self.LANGUAGE], minval,
-                                                        lg.max_min_period_lang[self.LANGUAGE], worst_period))
-
+            legend_list.append('{0} {1} {2} {3}'.format(lg.max_value_lang[self.LANGUAGE], 
+                                                        maxval,
+                                                        lg.max_min_period_lang[self.LANGUAGE], 
+                                                        best_period))
+            legend_list.append('{0} {1} {2} {3}'.format(lg.min_value_lang[self.LANGUAGE], 
+                                                        minval,
+                                                        lg.max_min_period_lang[self.LANGUAGE], 
+                                                        worst_period))
         return legend_list, maxval, minval
