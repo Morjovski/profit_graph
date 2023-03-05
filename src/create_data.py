@@ -98,13 +98,19 @@ class CreateData(db.DataBase):
                 if idx == 0:
                     overall_list.append(values)
                 else:
-                    overall_list.append([overall_list[idx - 1][0] + data[idx][0]])
+                    if values > 0:
+                        overall_list.append([overall_list[idx - 1][0] + data[idx][0]])
+                    else:
+                        overall_list.append(0)
             else:
                 for index, value in enumerate(values):
                     if index == 0:
                         temp.append(value)
                     else:
-                        temp.append(temp[index - 1] + values[index])
+                        if value > 0:
+                            temp.append(round(temp[index - 1] + values[index], 2))
+                        else:
+                            temp.append(0)
                 overall_list.append(temp)
         return overall_list
 
@@ -131,7 +137,7 @@ class CreateData(db.DataBase):
                         prepare_data += date[5]
                     else:
                         prepare_data += round(date[3] + date[4], 2)
-            temp.append(prepare_data)
+            temp.append(round(prepare_data, 2))
             label.append(str(year))
             format_data.append(temp)
         return format_data, label
@@ -162,7 +168,7 @@ class CreateData(db.DataBase):
                         else:
                             prepare_data += round(date[3] + date[4], 2)
                 label.append(str(month))
-                temp.append(prepare_data)
+                temp.append(round(prepare_data, 2))
             format_data.append(temp)
         return format_data, label
 
@@ -191,13 +197,13 @@ class CreateData(db.DataBase):
                         prepare_data += date[5]
                     else:
                         prepare_data += round(date[3] + date[4], 2)
-                temp.append(prepare_data)
+                temp.append(round(prepare_data, 2))
             format_data.append(temp)
 
             # Format days for a proper comparsion in graph
             for l in format_data:
                 if len(l) < 31:
-                    for _ in range(len(l), 32):
+                    for _ in range(len(l), 31):
                         l.append(0)
         
         # Create ax labels
@@ -206,15 +212,27 @@ class CreateData(db.DataBase):
 
         return format_data, label
 
-    def average(self, data):
+    def average(self, format_data):
         """Return average profit or purchases to label"""
-        return round(mean(data), 2)
+        ctr = 0
+        allsum = 0
+        for value in format_data:
+            if value > 0:
+                allsum += value
+                ctr += 1
+        try:
+            avg = allsum / ctr
+        except ZeroDivisionError:
+            avg = 0
+        return round(avg, 2)
     
     def max_min_value(self, format_data, periods, interval, mode):
         """Finding max value in formatted data"""
 
         maxval = 1
-        minval = format_data[0][0]
+        minval = mean(format_data[0])
+        best_period = ['1970', '1', '1']
+        worst_period = ['1970', '1', '1']
         if interval == 3:
             for periods in self.periods:
                 year = periods[:4]
@@ -232,25 +250,26 @@ class CreateData(db.DataBase):
                         if maxval < data[5]:
                             maxval = data[5]
                             best_period = [data[2], data[1], data[0]]
-                        if minval > data[5]:
+                        if minval >= data[5] and data[5] > 0:
                             minval = data[5]
                             worst_period = [data[2], data[1], data[0]]
                     else:
-                        if maxval < float(data[3] + data[4]):
-                            maxval = float(data[3] + data[4])
+                        if maxval < data[3] + data[4]:
+                            maxval = data[3] + data[4]
                             best_period = [data[2], data[1], data[0]]
-                        if minval > float(data[3] + data[4]):
-                            minval = float(data[3] + data[4])
+                        if minval >= data[3] + data[4] and data[3] + data[4] > 0:
+                            minval = data[3] + data[4]
                             worst_period = [data[2], data[1], data[0]]
         else:
             for index, data in enumerate(format_data):
-                if max(data) >= maxval:
-                    maxval = max(data)
-                    best_period = [periods[index], data.index(maxval) + 1]
-                if min(data) <= minval:
-                    minval = min(data)
-                    worst_period = [periods[index], data.index(minval) + 1]
-        return maxval, best_period, minval, worst_period
+                for idx, minmax in enumerate(data):
+                    if maxval <= minmax:
+                        maxval = minmax
+                        best_period = [periods[index], data.index(maxval) + 1]
+                    if minval >= minmax and minmax > 0:
+                        minval = minmax
+                        worst_period = [periods[index], data.index(minval) + 1]
+        return round(maxval, 2), best_period, round(minval, 2), worst_period
     
     def legend_name(self, periods, format_data, interval, mode, overall):
         """Creates legend names for graph"""
