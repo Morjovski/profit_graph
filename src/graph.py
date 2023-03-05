@@ -15,16 +15,16 @@ class Graph(CreateData):
         plt.style.use('_mpl-gallery')
         plt.rcParams["figure.autolayout"] = True
 
-    def create_graph_bar(self, formatted_list, label, legend_name, interval, periods, mode, maxval, minval, overall):
+    def create_graph_bar(self, format_data, label, legend_name, interval, periods, mode, maxval, minval, overall):
         """Compare two periods by grouped bar chart style"""
         
         fig, ax = plt.subplots()
         fig.set_size_inches(20, 10)
-        n_bars = len(formatted_list)
+        n_bars = len(format_data)
         total_width = 0.8
         bar_width = total_width / n_bars
 
-        for i, values in enumerate(formatted_list):
+        for i, values in enumerate(format_data):
             x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
             if interval != 1:
                 for x, y in enumerate(values):
@@ -47,7 +47,7 @@ class Graph(CreateData):
             for i in range(2):
                 plt.bar(i, 0, color='none')
 
-        if mode == 1:
+        if mode == 2:
             ax.set_title(f"{lg.purchases_title_lang[self.LANGUAGE]} {', '.join(periods)}")
             ax.set_ylabel(lg.purchases_label_lang[self.LANGUAGE])
         else:
