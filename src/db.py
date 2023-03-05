@@ -12,7 +12,10 @@ class DataBase:
 
     def connect(self):
         pathlib.Path('Database/').mkdir(parents=True, exist_ok=True)
-        self.conn = sqlite3.connect('Database\\entries.sqlite')
+        try:
+            self.conn = sqlite3.connect(r'./src/Database/entries.sqlite')
+        except sqlite3.OperationalError:
+            self.conn = sqlite3.connect(r'./Database/entries.sqlite')
         self.cur = self.conn.cursor()
 
     def create(self):
