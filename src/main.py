@@ -8,9 +8,6 @@ from random_data import RandomData
 import language as lg
 
 
-LANGUAGE = 'EN'
-
-
 class Mode:
 
     def __init__(self):
