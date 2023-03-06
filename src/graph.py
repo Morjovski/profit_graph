@@ -91,7 +91,7 @@ class Graph(CreateData):
 
         os.makedirs('graphs/profit', exist_ok=True)
         os.makedirs('graphs/purchases', exist_ok=True)
-        if mode == 1:
+        if mode == 2:
             plt.savefig(f"graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
             print(f"'purchases_graph_{'_'.join(periods)}.png' {lg.img_save_lang[self.LANGUAGE]}")
         else:
