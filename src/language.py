@@ -7,6 +7,7 @@ red = colorama.Fore.RED
 green = colorama.Fore.GREEN
 color_reset = colorama.Fore.RESET
 
+
 def choose_language():
     while True:
         lang = input(f'\nChoose a language\nВыберите язык\nОберіть мову\n'
@@ -184,9 +185,15 @@ average_profit_lang = {
 }
 
 average_purchases_lang = {
-    "EN": "average amount:",
-    "RU": "среднее кол-во:",
+    "EN": "average:",
+    "RU": "среднее значение:",
     "UA": "середня кількість:"
+}
+
+compare_to_first_period_lang = {
+    "EN": "compare to first period",
+    "RU": "в сравнении с первым периодом",
+    "UA": "у порівнянні з першим періодом"
 }
 
 enter_quit_add_data_lang = {
@@ -285,10 +292,16 @@ int_value_lang = {
     "UA": f"Потрібно ввести {yellow}ціле{color_reset} число!"
 }
 
-img_save_lang = {
-    "EN": f"is {green}successfully saved{color_reset} into '{yellow}graphs{color_reset}' folder!",
-    "RU": f"{green}успешно сохранён{color_reset} в папку '{yellow}graphs{color_reset}'!",
-    "UA": f"{green}успішно збережено{color_reset} у папку '{yellow}graphs{color_reset}'!"
+purchases_img_save_lang = {
+    "EN": f"is {green}successfully saved{color_reset} into '{yellow}graphs/purchases{color_reset}' folder!",
+    "RU": f"{green}успешно сохранён{color_reset} в папку '{yellow}graphs/purchases{color_reset}'!",
+    "UA": f"{green}успішно збережено{color_reset} у папку '{yellow}graphs/purchases{color_reset}'!"
+}
+
+profit_img_save_lang = {
+    "EN": f"is {green}successfully saved{color_reset} into '{yellow}graphs/profit{color_reset}' folder!",
+    "RU": f"{green}успешно сохранён{color_reset} в папку '{yellow}graphs/profit{color_reset}'!",
+    "UA": f"{green}успішно збережено{color_reset} у папку '{yellow}graphs/profit{color_reset}'!"
 }
 
 success_random_data_lang = {
