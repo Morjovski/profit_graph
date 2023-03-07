@@ -1,7 +1,5 @@
 import datetime
 from statistics import mean
-import colorama
-from colorama import Fore
 
 import db
 import language as lg
@@ -10,7 +8,6 @@ import language as lg
 class CreateData(db.DataBase):
 
     def __init__(self, LANGUAGE):
-        colorama.init()
         self.LANGUAGE = LANGUAGE
         super().__init__(self.LANGUAGE)
 
