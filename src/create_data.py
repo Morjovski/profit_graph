@@ -87,7 +87,7 @@ class CreateData(db.DataBase):
         if overall == 1:
             format_data, overall_dif = self._overall_sum(format_data, interval)
 
-        legend_name, maxval, minval = self._legend_name(self.periods, format_data, interval, mode, overall, overall_dif)
+        legend_name, maxval, minval = self._legend_text(self.periods, format_data, interval, mode, overall, overall_dif)
         return format_data, label, legend_name, maxval, minval
 
     @staticmethod
@@ -239,7 +239,7 @@ class CreateData(db.DataBase):
         return round(avg, 2)
     
     def _max_min_value(self, format_data, periods, interval, mode):
-        """Finding max value in formatted data"""
+        """Finding max value in data"""
 
         maxval = 1
         minval = mean(format_data[0])
@@ -285,47 +285,56 @@ class CreateData(db.DataBase):
                         worst_period = [periods[index], data.index(minval) + 1]
         return maxval, best_period, minval, worst_period
     
-    def _legend_name(self, periods, format_data, interval, mode, overall, overall_dif):
+    def _legend_text(self, periods, format_data, interval, mode, overall, overall_dif):
         """Creates legend names for graph"""
 
         maxval, minval = 0, 0
         legend_list = []
+        average = []
+
         for index, period in enumerate(periods):
+            if interval > 1:
+                if overall == 2:
+                    average.append(self._average(format_data[index]))
+                else:
+                    average.append(self._average(overall_dif[index]))
+
             if overall == 2:
                 maxval, best_period, minval, worst_period = self._max_min_value(format_data, periods, interval, mode)
+
             if interval == 1:
                 if overall == 2:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]}"
+                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}," \
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(overall_dif[:index + 1])}" \
+                             f"{self._percent_change(format_data[0], format_data[index], index, interval)}"
                     best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
                     worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
                 else:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}," \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(overall_dif[:index + 1])}" \
-                             f"{self.percent_change(format_data[0], format_data[index], index)}"
+                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}"
             elif interval == 2:
                 if overall == 2:
                     legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(format_data[index])}" \
-                             f"{self.percent_change(format_data[0], format_data[index], index)}"
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                             f"{self._percent_change(average[0], average[index], index)}"
                     best_period = datetime.date(int(best_period[0]), int(best_period[1]), 1).strftime('%B %Y')
                     worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), 1).strftime('%B %Y')
                 else:
                     legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(overall_dif[index])}" \
-                             f"{self.percent_change(format_data[0], format_data[index], index)}"
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                             f"{self._percent_change(average[0], average[index], index)}"
             else:
                 if overall == 2:
                     legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(format_data[index])}" \
-                             f"{self.percent_change(format_data[0], format_data[index], index)}"
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                             f"{self._percent_change(average[0], average[index], index)}"
                     best_period = datetime.date(int(best_period[0]), int(best_period[1]), int(best_period[2]))
                     worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), int(worst_period[2]))
                 else:
                     legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(overall_dif[index])}" \
-                             f"{self.percent_change(format_data[0], format_data[index], index)}"
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                             f"{self._percent_change(average[0], average[index], index)}"
             legend_list.append(legend)
+
         if overall == 2:
             legend_list.append('{0} {1}\n{2} {3}'.format(lg.max_value_lang[self.LANGUAGE], 
                                                         maxval,
@@ -337,10 +346,12 @@ class CreateData(db.DataBase):
                                                         worst_period))
         return legend_list, maxval, minval
 
-    def percent_change(self, first, second, index):
+    def _percent_change(self, first, second, index, interval=2):
         """Return a percent value compare to first period"""
-        first = sum(first)
-        second = sum(second)
+
+        if interval == 1:
+            first = sum(first)
+            second = sum(second)
         if index == 0:
             return ''
         elif first < second:
