@@ -295,19 +295,26 @@ class CreateData(db.DataBase):
                     average.append(self._average(format_data[index]))
                 else:
                     average.append(self._average(overall_dif[index]))
+            else:
+                if overall == 2:
+                    average.append(sum(format_data[index]) / 12)
+                else:
+                    average.append(self._average(overall_dif[:index + 1]))
 
             if overall == 2:
                 maxval, best_period, minval, worst_period = self._max_min_value(format_data, periods, interval, mode)
 
             if interval == 1:
                 if overall == 2:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}," \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {self._average(overall_dif[:index + 1])}" \
-                             f"{self._percent_change(format_data[0], format_data[index], index, interval)}"
+                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                             f"{self._percent_change(average[0], average[index], index, interval)}"
                     best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
                     worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
                 else:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}"
+                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}" \
+                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                             f"{self._percent_change(average[0], average[index], index)}"
             elif interval == 2:
                 if overall == 2:
                     legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
@@ -346,9 +353,6 @@ class CreateData(db.DataBase):
     def _percent_change(self, first, second, index, interval=2):
         """Return a percent value compare to first period"""
 
-        if interval == 1:
-            first = sum(first)
-            second = sum(second)
         if index == 0:
             return ''
         elif first < second:
