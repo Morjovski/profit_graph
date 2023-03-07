@@ -11,7 +11,7 @@ class DataBase:
         self.LANGUAGE = LANGUAGE
 
     def connect(self):
-        pathlib.Path('Database/').mkdir(parents=True, exist_ok=True)
+        pathlib.Path(r'src/Database/').mkdir(parents=True, exist_ok=True)
         try:
             self.conn = sqlite3.connect(r'./src/Database/entries.sqlite')
         except sqlite3.OperationalError:

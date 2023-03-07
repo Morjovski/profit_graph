@@ -59,7 +59,7 @@ class Mode:
                         try:
                             mode = int(mode)
                         except ValueError:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         if not 1 <= mode <= 2:
                             self._incorrect_data()
