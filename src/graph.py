@@ -89,13 +89,13 @@ class Graph(CreateData):
 
         plt.subplots_adjust(right=0.7)
 
-        os.makedirs('graphs/profit', exist_ok=True)
-        os.makedirs('graphs/purchases', exist_ok=True)
+        os.makedirs('src/graphs/profit', exist_ok=True)
+        os.makedirs('src/graphs/purchases', exist_ok=True)
         if mode == 2:
-            plt.savefig(f"graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
+            plt.savefig(f"src/graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
             print(f"'purchases_graph_{'_'.join(periods)}.png' {lg.purchases_img_save_lang[self.LANGUAGE]}")
         else:
-            plt.savefig(f"graphs/profit/profit_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
+            plt.savefig(f"src/graphs/profit/profit_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
             print(f"'profit_graph_{'_'.join(periods)}.png' {lg.profit_img_save_lang[self.LANGUAGE]}")
 
         plt.show()
