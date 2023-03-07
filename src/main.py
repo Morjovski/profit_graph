@@ -33,7 +33,7 @@ class Mode:
             elif n == '1':
                 self.ad.add_data()
             elif n == '2':
-                if not os.path.exists('Database\\entries.sqlite'):
+                if not os.path.exists(r'src/Database/entries.sqlite'):
                     print(lg.no_file_data_lang[self.LANGUAGE])
                     self.ad.add_data()
                 else:
