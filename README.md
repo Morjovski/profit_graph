@@ -1,42 +1,37 @@
 # About
 
-This program will help you showcase the profits and purchases of your company by days, months and years! Create your own database, choose personalized options and compare the data to analyse your business outcomes just in a few clicks! 
+This program will help you showcase the profits and purchases of your company by days, months and years! Choose personalized options and compare the data to analyse your business outcomes just in a few clicks! 
 
 #### What the program can do:
+
 1. Uses three languages (EN/UA/RU)
 2. Adds data to database
-3. Creates graph by options
-4. Shows max and min data
-5. Shows average by period
+3. Creates graph by several options
+4. Shows max and min data in legend
+5. Shows average value by period and percent change compared to first entered period
 6. Saves your graphs in 'graph/' directory
 7. Creates random data
     * To use this, just enter 'random' while you choose 'add data' or 'create graph'
 
 #### Used libraries:
+
 * [matplotlib](https://github.com/matplotlib/matplotlib)
 * [mplcursors](https://github.com/anntzer/mplcursors)
 * [tqdm](https://github.com/tqdm/tqdm)
 * [colorama](https://github.com/tartley/colorama)
+* [sqlite3](https://docs.python.org/3/library/sqlite3.html)
 
 ## Install
 
-Clone this repository:
+Install via pip:
 ```
-git clone https://github.com/Morjovski/profit_graph.git
-```
-GitHub CLI:
-```
-gh repo clone Morjovski/profit_graph
-```
-For install dependencies change your directory to profit_graph folder and use pip install requirements:
-```
-pip install -r requirements.txt
+pip install profitgraph
 ```
 ## Launch
-To launch the program, change directory to src and launch a main.py:
+
+To launch a program, launch a cmd and write:
 ```
-cd src
-python main.py
+startgraph
 ```
 
 ## Examples
