@@ -1,8 +1,8 @@
 import datetime
 from statistics import mean
 
-import db
-import language as lg
+from . import db 
+from . import language as lg
 
 
 class CreateData(db.DataBase):

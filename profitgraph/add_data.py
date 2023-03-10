@@ -1,8 +1,9 @@
 import datetime
 from time import sleep
+import colorama
 
-import language as lg
-import db
+from . import language as lg
+from . import db
 
 
 class AddData(db.DataBase):
@@ -11,6 +12,7 @@ class AddData(db.DataBase):
         self.LANGUAGE = LANGUAGE
         super().__init__(self.LANGUAGE)
         self.Flag = False
+        colorama.init()
 
     def add_data(self):
         """Used for adding a new data in SQLite database"""
@@ -19,7 +21,7 @@ class AddData(db.DataBase):
 
         while True:
             try:
-                period, cash, cashless, purchases = self._create_answer(self.LANGUAGE)
+                period, cash, cashless, purchases = self._create_answer()
             except ValueError:
                 if self.Flag:
                     self.close()
@@ -43,30 +45,34 @@ class AddData(db.DataBase):
                 self.close()
                 break
 
-    def _create_answer(self, LANGUAGE):
+    def _create_answer(self):
         """Collect necessary data"""
 
         self.Flag = False
-        enter = lg.create_file_enter_lang[LANGUAGE]
+        enter = lg.create_file_enter_lang[self.LANGUAGE]
         answ_list = []
-        print(lg.enter_quit_add_data_lang[LANGUAGE])
+        print(lg.enter_quit_add_data_lang[self.LANGUAGE])
         for index, variable in enumerate(enter):
             if index == 0:
                 while True:
-                    print(lg.leave_empty_lang[LANGUAGE])
-                    day = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable} {lg.day_format_lang[self.LANGUAGE]}')
+                    print(lg.leave_empty_lang[self.LANGUAGE])
+                    try:
+                        print(f"{lg.last_period_lang[self.LANGUAGE]} {colorama.Fore.YELLOW}{self.take_last_period()}{colorama.Fore.RESET}")
+                    except:
+                        pass
+                    day = input(f'{lg.answer_enter_lang[self.LANGUAGE]} {variable} {lg.day_format_lang[self.LANGUAGE]}')
                     if day in 'qй':
                         self.Flag = True
                         break
                     else:
                         try:
-                            day = datetime.date(int(day[:4]), int(day[5:7]), int(day[8:]))
+                            day = datetime.date(int(day[6:]), int(day[3:5]), int(day[:2]))
                         except ValueError:
                             if len(day) == 0:
                                 day = datetime.datetime.now().date()
                                 print(f"{lg.auto_day_enter_lang[self.LANGUAGE]} {str(day)}")
                             else:
-                                print(lg.incorrect_day_lang[LANGUAGE])
+                                print(lg.incorrect_day_lang[self.LANGUAGE])
                                 print(lg.correct_day_format_lang[self.LANGUAGE])
                                 sleep(1)
                                 continue
@@ -74,7 +80,7 @@ class AddData(db.DataBase):
                         break
             else:
                 while True:
-                    answ = input(f'{lg.answer_enter_lang[LANGUAGE]} {variable}: ')
+                    answ = input(f'{lg.answer_enter_lang[self.LANGUAGE]} {variable}: ')
                     if answ in 'qй':
                         self.Flag = True
                         break
@@ -84,7 +90,7 @@ class AddData(db.DataBase):
                         else:
                             answ = int(answ)
                     except ValueError:
-                        print(lg.incorrect_data_lang[LANGUAGE])
+                        print(lg.incorrect_data_lang[self.LANGUAGE])
                         if index != 3:
                             print(lg.float_value_lang[self.LANGUAGE])
                         else:
