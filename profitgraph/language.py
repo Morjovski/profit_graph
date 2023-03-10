@@ -82,6 +82,12 @@ create_file_lang = {
     "UA": f"\nФайл бази даних {green}успішно створено{color_reset} з вищевказаними значеннями! "    
 }
 
+success_db_delete_lang = {
+    "EN": f"\nDatabase file {green}successfully deleted{color_reset}! ",
+    "RU": f"\nФайл базы данных {green}успешно удалён{color_reset}! ",
+    "UA": f"\nФайл бази даних {green}успішно видалено{color_reset}! "    
+}
+
 create_file_enter_lang = {
     "EN": [f'{yellow}day{color_reset}', f'{yellow}cash profit{color_reset}', f'{yellow}cashless profit{color_reset}', f'{yellow}purchases{color_reset}'],
     "RU": [f'{yellow}день{color_reset}', f'{yellow}прибыль наличными{color_reset}', f'{yellow}прибыль безналичными{color_reset}', f'{yellow}продажи{color_reset}'],
@@ -89,9 +95,9 @@ create_file_enter_lang = {
 }
 
 day_format_lang = {
-    "EN": f"in ({yellow}yyyy-mm-dd{color_reset}) format: ",
-    "RU": f"в формате ({yellow}гггг-мм-дд{color_reset}): ",
-    "UA": f"у форматі ({yellow}рррр-мм-дд{color_reset}: "
+    "EN": f"in ({yellow}dd-mm-yyyy{color_reset}) format: ",
+    "RU": f"в формате ({yellow}дд-мм-гггг{color_reset}): ",
+    "UA": f"у форматі ({yellow}дд-мм-рррр{color_reset}: "
 }
 
 correct_day_format_lang = {
@@ -299,9 +305,9 @@ purchases_img_save_lang = {
 }
 
 profit_img_save_lang = {
-    "EN": f"is {green}successfully saved{color_reset} into '{yellow}graphs/profit{color_reset}' folder!",
-    "RU": f"{green}успешно сохранён{color_reset} в папку '{yellow}graphs/profit{color_reset}'!",
-    "UA": f"{green}успішно збережено{color_reset} у папку '{yellow}graphs/profit{color_reset}'!"
+    "EN": f"is {green}successfully saved{color_reset} in folder:",
+    "RU": f"{green}успешно сохранён{color_reset} в папку:",
+    "UA": f"{green}успішно збережено{color_reset} у папку:"
 }
 
 success_random_data_lang = {
@@ -326,4 +332,16 @@ incorrect_year_month_lang = {
     "EN": f"\n{red}Incorrect periods format!{color_reset} Enter dates in format ({yellow}yyyy-mm{color_reset}) separated by space!",
     "RU": f"\n{red}Неправильно введенные периоды!{color_reset} Введите даты в формате ({yellow}гггг-мм{color_reset}), которые разделены пробелом!",
     "UA": f"\n{red}Невірно введені періоди!{color_reset} Введіть дати у форматі ({yellow}рррр-мм{color_reset}), які розділені пробілом!"
+}
+
+last_period_lang = {
+    "EN": "\nLast added period is:",
+    "RU": "\nПоследний добавленный период:",
+    "UA": "\nОстанній доданий період:"
+}
+
+delete_db_lang = {
+    "EN": f"Enter '{yellow}delete{color_reset}' to delete a database file!",
+    "RU": f"Введите '{yellow}delete{color_reset}' для удаления файла базы данных!",
+    "UA": f"Введіть '{yellow}delete{color_reset}' для видалення файла бази даних!"
 }

@@ -1,8 +1,8 @@
 from random import randint
 from tqdm import tqdm
 
-import db
-import language as lg
+from . import db
+from . import language as lg
 
 
 class RandomData(db.DataBase):

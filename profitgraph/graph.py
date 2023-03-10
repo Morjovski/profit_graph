@@ -2,8 +2,8 @@ import matplotlib.pyplot as plt
 import mplcursors
 import os
 
-from create_data import CreateData
-import language as lg
+from .create_data import CreateData
+from . import language as lg
 
 
 class Graph(CreateData):
@@ -14,6 +14,8 @@ class Graph(CreateData):
         self.colors = [plt.cm.tab10(i) for i in range(12)]
         plt.style.use('_mpl-gallery')
         plt.rcParams["figure.autolayout"] = True
+        self.dir_path = os.path.dirname(__file__)
+
 
     def create_graph_bar(self, format_data, label, legend_name, interval, periods, mode, maxval, minval, overall):
         """Compare two periods by grouped bar chart style"""
@@ -89,13 +91,17 @@ class Graph(CreateData):
 
         plt.subplots_adjust(right=0.7)
 
-        os.makedirs('graphs/profit', exist_ok=True)
-        os.makedirs('graphs/purchases', exist_ok=True)
         if mode == 2:
-            plt.savefig(f"graphs/purchases/purchases_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
-            print(f"'purchases_graph_{'_'.join(periods)}.png' {lg.purchases_img_save_lang[self.LANGUAGE]}")
+            folder_name = self.dir_path + "\\graphs\\purchases"
+            os.makedirs(folder_name, exist_ok=True)
+            purchase_file = self.dir_path + f"graphs\\purchases\\purchases_graph_{'_'.join(periods)}.png"
+            plt.savefig(purchase_file, bbox_inches='tight', dpi=300)
+            print(f"'purchases_graph_{'_'.join(periods)}.png' {lg.purchases_img_save_lang[self.LANGUAGE]} {folder_name}")
         else:
-            plt.savefig(f"graphs/profit/profit_graph_{'_'.join(periods)}.png", bbox_inches='tight', dpi=300)
-            print(f"'profit_graph_{'_'.join(periods)}.png' {lg.profit_img_save_lang[self.LANGUAGE]}")
+            folder_name = self.dir_path + "\\graphs\\profit"
+            os.makedirs(folder_name, exist_ok=True)
+            profit_file = self.dir_path + f"\\graphs\\profit\\profit_graph_{'_'.join(periods)}.png"
+            plt.savefig(profit_file, bbox_inches='tight', dpi=300)
+            print(f"'profit_graph_{'_'.join(periods)}.png' {lg.profit_img_save_lang[self.LANGUAGE]} {folder_name}")
 
         plt.show()

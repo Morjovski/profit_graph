@@ -1,16 +1,17 @@
 import os
 from time import sleep
 
-from add_data import AddData
-from graph import Graph
-from create_data import CreateData
-from random_data import RandomData
-import language as lg
+from .add_data import AddData
+from .graph import Graph
+from .create_data import CreateData
+from .random_data import RandomData
+from . import language as lg
 
 
 class Mode:
 
     def __init__(self):
+        self.dir_path = os.path.dirname(__file__)
         self.LANGUAGE = lg.choose_language()
         self.ad = AddData(self.LANGUAGE)
         self.cd = CreateData(self.LANGUAGE)
@@ -18,14 +19,26 @@ class Mode:
         self.random = RandomData(self.LANGUAGE)
         print(lg.select_language_lang[self.LANGUAGE])
 
+
     def select(self):
         """Main menu"""
 
         while True:
             print(lg.quit_program_lang[self.LANGUAGE])
+            print(lg.delete_db_lang[self.LANGUAGE])
             n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
             if n.lower() == 'random':
                 self.random.randomize()
+            elif n.lower() == 'delete':
+                try:
+                    db_path = self.dir_path + '\\Database\\entries.sqlite'
+                    os.remove(db_path)
+                    print(lg.success_db_delete_lang[self.LANGUAGE])
+                    continue
+                except FileNotFoundError:
+                    print(lg.no_file_data_lang[self.LANGUAGE])
+                    os.makedirs(self.dir_path + "\\Database", exist_ok=True)
+                    self.ad.add_data()
             elif n.lower() == 'quit':
                 print(lg.exit_program_lang[self.LANGUAGE])
                 sleep(1.5)
@@ -33,7 +46,8 @@ class Mode:
             elif n == '1':
                 self.ad.add_data()
             elif n == '2':
-                if not os.path.exists('Database\\entries.sqlite'):
+                if not os.path.exists(self.dir_path + "\\Database\\entries.sqlite"):
+                    os.makedirs(self.dir_path + "\\Database", exist_ok=True)
                     print(lg.no_file_data_lang[self.LANGUAGE])
                     self.ad.add_data()
                 else:
@@ -59,7 +73,7 @@ class Mode:
                         try:
                             mode = int(mode)
                         except ValueError:
-                            self.incorrect_data()
+                            self._incorrect_data()
                             continue
                         if not 1 <= mode <= 2:
                             self._incorrect_data()
@@ -92,6 +106,6 @@ class Mode:
         sleep(1)
 
 
-if __name__ == '__main__':
-    gr = Mode()
-    gr.select()
+# if __name__ == '__main__':
+#     gr = Mode()
+#     gr.select()

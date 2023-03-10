@@ -1,8 +1,8 @@
 import sqlite3
 import calendar
-import pathlib
+import os
 
-import language as lg
+from . import language as lg
 
 
 class DataBase:
@@ -11,15 +11,12 @@ class DataBase:
         self.LANGUAGE = LANGUAGE
 
     def connect(self):
-        pathlib.Path('Database/').mkdir(parents=True, exist_ok=True)
-        try:
-            self.conn = sqlite3.connect(r'./src/Database/entries.sqlite')
-        except sqlite3.OperationalError:
-            self.conn = sqlite3.connect(r'./Database/entries.sqlite')
+        self.conn = sqlite3.connect(os.path.dirname(__file__) + "\\Database\\entries.sqlite")
         self.cur = self.conn.cursor()
 
     def create(self):
         """Create tables in database if they not exists"""
+
         self.cur.executescript("""
             CREATE TABLE IF NOT EXISTS years (
             id INTEGER NOT NULL PRIMARY KEY UNIQUE,
@@ -44,26 +41,30 @@ class DataBase:
 
     def insert_day(self, day, month, cash, cashless, purchases, year):
         """Inserts day, month, year_id, cash, cashless and purchases to "days" table"""
+
         self.cur.execute("""INSERT INTO days (day, cash, cashless, purchases, month_id, year_id) 
                             VALUES (?, ?, ?, ?, ?, ?)""", (day, cash, cashless, purchases, month, self.year_id))
 
     def insert_month(self, month):
         """Inserts month id and month name in "months" table"""
+
         month_name = calendar.month_name[int(month)]
         self.cur.execute('INSERT OR IGNORE INTO months (id, month) VALUES (?, ?)', (month, month_name))
 
     def insert_year(self, year):
         """Inserts year in "years" table"""
-        self.cur.execute('INSERT OR IGNORE INTO years (year) VALUES (?)', (year, ))
-        self.take_year_id(year)
 
-    def take_year_id(self, year):
+        self.cur.execute('INSERT OR IGNORE INTO years (year) VALUES (?)', (year, ))
+        self._take_year_id(year)
+
+    def _take_year_id(self, year):
         year_data = self.cur.execute("SELECT years.id, years.year FROM years WHERE years.year = ?", (year, ))
         for year in year_data:
             self.year_id = year[0]
 
     def duplicate_check(self, period):
         """Check if current period is not in Database"""
+
         duplicate = self.cur.execute("""SELECT days.day, days.month_id, days.year_id 
                                         FROM days 
                                         JOIN years 
@@ -74,6 +75,14 @@ class DataBase:
                 return True
         else:
             return False
+
+    def take_last_period(self):
+        """Takes last period from DB to show it while add data"""
+
+        id = self.cur.execute("SELECT id FROM days ORDER BY id DESC LIMIT 1").fetchone()
+        period = self.cur.execute("SELECT days.day, days.month_id, years.year FROM days JOIN years WHERE days.id = ?", id).fetchone()
+        period = '-'.join([str(i) for i in period])
+        return period
 
     def commit(self):
         """Commits changes to Database"""
