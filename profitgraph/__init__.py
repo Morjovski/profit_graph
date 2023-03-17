@@ -7,12 +7,13 @@ def start_program():
     graph.select()
 
 __project__      = 'profitgraph'
-__version__      = '0.8.0'
+__version__      = '0.8.1'
 __keywords__     = ['profits', 'graphs', 'analytics']
 __author__       = 'Morjovski'
 __author_email__ = 'amor3ux@gmail.com'
 __url__          = 'https://github.com/Morjovski/profit_graph'
 __platforms__    = 'ALL'
+__long_description_content_type__="text/markdown"
 
 __classifiers__ = [
     "Development Status :: 4 - Beta",

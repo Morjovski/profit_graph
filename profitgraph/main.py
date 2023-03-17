@@ -104,8 +104,3 @@ class Mode:
     def _incorrect_data(self):
         print(lg.incorrect_data_lang[self.LANGUAGE])
         sleep(1)
-
-
-# if __name__ == '__main__':
-#     gr = Mode()
-#     gr.select()

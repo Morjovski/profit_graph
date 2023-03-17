@@ -94,7 +94,7 @@ class Graph(CreateData):
         if mode == 2:
             folder_name = self.dir_path + "\\graphs\\purchases"
             os.makedirs(folder_name, exist_ok=True)
-            purchase_file = self.dir_path + f"graphs\\purchases\\purchases_graph_{'_'.join(periods)}.png"
+            purchase_file = self.dir_path + f"\\graphs\\purchases\\purchases_graph_{'_'.join(periods)}.png"
             plt.savefig(purchase_file, bbox_inches='tight', dpi=300)
             print(f"'purchases_graph_{'_'.join(periods)}.png' {lg.purchases_img_save_lang[self.LANGUAGE]} {folder_name}")
         else:

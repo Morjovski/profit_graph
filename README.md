@@ -29,7 +29,7 @@ pip install profitgraph
 ```
 ## Launch
 
-To launch a program, launch a cmd and write:
+To launch a program, open a cmd (Win+R) and enter:
 ```
 startgraph
 ```

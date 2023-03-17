@@ -17,31 +17,7 @@ class CreateData(db.DataBase):
         self.connect()
 
         while True:
-            if interval == 1:
-                self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
-                if len(self.periods) < 1:
-                    self.periods.append(datetime.datetime.now().strftime('%Y'))
-                    break
-                else:
-                    Flag = self._check_period()
-                    if Flag:
-                        print(lg.incorrect_year_lang[self.LANGUAGE])
-                        continue
-                    else:
-                        break
-            elif interval == 2:
-                self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
-                if len(self.periods) < 1:
-                    self.periods.append(datetime.datetime.now().strftime('%Y'))
-                    break
-                else:
-                    Flag = self._check_period()
-                    if Flag:
-                        print(lg.incorrect_year_lang[self.LANGUAGE])
-                        continue
-                    else:
-                        break
-            else:
+            if interval == 3:
                 self.periods = list(input(lg.enter_month_lang[self.LANGUAGE]).split())
                 if len(self.periods) < 1:
                     self.periods.append(datetime.datetime.now().strftime('%Y-%m'))
@@ -50,6 +26,18 @@ class CreateData(db.DataBase):
                     Flag = self._check_period(interval)
                     if Flag:
                         print(lg.incorrect_year_month_lang[self.LANGUAGE])
+                        continue
+                    else:
+                        break
+            else:
+                self.periods = list(input(lg.enter_years_lang[self.LANGUAGE]).split())
+                if len(self.periods) < 1:
+                    self.periods.append(datetime.datetime.now().strftime('%Y'))
+                    break
+                else:
+                    Flag = self._check_period()
+                    if Flag:
+                        print(lg.incorrect_year_lang[self.LANGUAGE])
                         continue
                     else:
                         break
@@ -129,7 +117,7 @@ class CreateData(db.DataBase):
 
         for period in self.periods:
             temp = []
-            year = int(period[:4])
+            year = period[:4]
             raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
                                 FROM days 
                                 JOIN years 
@@ -239,13 +227,13 @@ class CreateData(db.DataBase):
         """Finding max value in data"""
 
         maxval = 1
-        minval = mean(format_data[0])
+        minval = round(sum(format_data[0]), 2)
         best_period = ['1970', '1', '1']
         worst_period = ['1970', '1', '1']
         if interval == 3:
-            for periods in self.periods:
-                period_year = periods[:4]
-                period_month = periods[5:7]
+            for period in self.periods:
+                period_year = period[:4]
+                period_month = period[5:7]
                 raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
                                     FROM days 
                                     JOIN years 
@@ -260,26 +248,28 @@ class CreateData(db.DataBase):
                     if mode == 2:
                         if maxval < purchases:
                             maxval = purchases
-                            best_period = [year, month, day]
+                            best_period = datetime.date(year, month, day).strftime("%Y-%m-%d")
                         if minval >= purchases > 0:
                             minval = purchases
-                            worst_period = [year, month, day]
+                            worst_period = datetime.date(year, month, day).strftime("%Y-%mB-%d")
                     else:
                         if maxval < cash + cashless:
                             maxval = round(cash + cashless, 2)
-                            best_period = [year, month, day]
+                            best_period = datetime.date(year, month, day).strftime("%Y-%m-%d")
                         if minval >= cash + cashless > 0:
                             minval = round(cash + cashless, 2)
-                            worst_period = [year, month, day]
+                            worst_period = datetime.date(year, month, day).strftime("%Y-%m-%d")
         else:
             for index, data in enumerate(format_data):
-                for minmax in data:
-                    if maxval <= minmax:
-                        maxval = round(minmax, 2)
-                        best_period = [periods[index], data.index(maxval) + 1]
-                    if minval >= minmax > 0:
-                        minval = round(minmax, 2)
-                        worst_period = [periods[index], data.index(minval) + 1]
+                for value in data:
+                    if maxval <= value:
+                        maxval = round(value, 2)
+                        best_period = datetime.date(periods[index], data.index(maxval) + 1).strftime("%B-%Y") if interval == 2 else \
+                                      datetime.date(periods[index], 1, 1).strftime("%Y")
+                    if minval >= value > 0:
+                        minval = round(value, 2)
+                        worst_period = datetime.date(periods[index], data.index(minval) + 1).strftime("%B-%Y") if interval == 2 else \
+                                       datetime.date(periods[index], 1, 1).strftime("%Y")
         return maxval, best_period, minval, worst_period
     
     def _legend_text(self, periods, format_data, interval, mode, overall, overall_dif):
@@ -304,39 +294,15 @@ class CreateData(db.DataBase):
             if overall == 2:
                 maxval, best_period, minval, worst_period = self._max_min_value(format_data, periods, interval, mode)
 
-            if interval == 1:
-                if overall == 2:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
-                             f"{self._percent_change(average[0], average[index], index, interval)}"
-                    best_period = datetime.date(int(best_period[0]), 1, 1).strftime('%Y')
-                    worst_period = datetime.datetime(int(worst_period[0]), 1, 1).strftime('%Y')
-                else:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}" \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
-                             f"{self._percent_change(average[0], average[index], index)}"
-            elif interval == 2:
-                if overall == 2:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
-                             f"{self._percent_change(average[0], average[index], index)}"
-                    best_period = datetime.date(int(best_period[0]), int(best_period[1]), 1).strftime('%B %Y')
-                    worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), 1).strftime('%B %Y')
-                else:
-                    legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
-                             f"{self._percent_change(average[0], average[index], index)}"
+            if interval == 3:
+                legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
+                         f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                         f"{self._percent_change(average[0], average[index])}"
             else:
-                if overall == 2:
-                    legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
-                             f"{self._percent_change(average[0], average[index], index)}"
-                    best_period = datetime.date(int(best_period[0]), int(best_period[1]), int(best_period[2]))
-                    worst_period = datetime.date(int(worst_period[0]), int(worst_period[1]), int(worst_period[2]))
-                else:
-                    legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
-                             f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
-                             f"{self._percent_change(average[0], average[index], index)}"
+                legend = f"{datetime.date(int(period[:4]), 1, 1).strftime('%Y')}, " \
+                         f"{lg.average_purchases_lang[self.LANGUAGE]} {average[index]}" \
+                         f"{self._percent_change(average[0], average[index])}"
+
             legend_list.append(legend)
 
         if overall == 2:
@@ -350,12 +316,12 @@ class CreateData(db.DataBase):
                                                         worst_period))
         return legend_list, maxval, minval
 
-    def _percent_change(self, first, second, index, interval=2):
+    def _percent_change(self, first, second):
         """Return a percent value compare to first period"""
 
-        if index == 0:
-            return ''
-        elif first < second:
+        if first < second:
             return f"\n(+{str(round(((second - first) / first) * 100, 2))}% {lg.compare_to_first_period_lang[self.LANGUAGE]})"
-        else:
+        elif first > second:
             return f"\n({str(round(((second - first) / first) * 100, 2))}% {lg.compare_to_first_period_lang[self.LANGUAGE]})"
+        else:
+            return ''

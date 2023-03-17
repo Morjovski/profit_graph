@@ -5,3 +5,6 @@ graphs/
 data_backup/
 SQLTest/
 entries.sqlite
+dist/
+build/
+profitgraph.egg-info/
