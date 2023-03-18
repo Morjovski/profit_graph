@@ -7,11 +7,11 @@ from . import language as lg
 
 class RandomData(db.DataBase):
     
-    def __init__(self, LANGUAGE):
+    def __init__(self, LANGUAGE: str) -> None:
         self.LANGUAGE = LANGUAGE
         super().__init__(LANGUAGE)
 
-    def randomize(self):
+    def randomize(self) -> None:
         """Used to create and save random data in data.json"""
         print(lg.randomize_msg_lang[self.LANGUAGE])
         year_step = int(input(lg.random_year_lang[self.LANGUAGE]))

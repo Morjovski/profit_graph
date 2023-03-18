@@ -10,7 +10,7 @@ from . import language as lg
 
 class Mode:
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.dir_path = os.path.dirname(__file__)
         self.LANGUAGE = lg.choose_language()
         self.ad = AddData(self.LANGUAGE)
@@ -20,7 +20,7 @@ class Mode:
         print(lg.select_language_lang[self.LANGUAGE])
 
 
-    def select(self):
+    def select(self) -> None:
         """Main menu"""
 
         while True:
@@ -101,6 +101,6 @@ class Mode:
                 self._incorrect_data()
                 continue
 
-    def _incorrect_data(self):
+    def _incorrect_data(self) -> None:
         print(lg.incorrect_data_lang[self.LANGUAGE])
         sleep(1)

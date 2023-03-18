@@ -7,11 +7,11 @@ from . import language as lg
 
 class CreateData(db.DataBase):
 
-    def __init__(self, LANGUAGE):
+    def __init__(self, LANGUAGE: str) -> None:
         self.LANGUAGE = LANGUAGE
         super().__init__(self.LANGUAGE)
 
-    def take_period(self, interval):
+    def take_period(self, interval: int) -> list[str]:
         """Optimise dates for create_data method"""
 
         self.connect()
@@ -35,7 +35,7 @@ class CreateData(db.DataBase):
                     self.periods.append(datetime.datetime.now().strftime('%Y'))
                     break
                 else:
-                    Flag = self._check_period()
+                    Flag = self._check_period(interval)
                     if Flag:
                         print(lg.incorrect_year_lang[self.LANGUAGE])
                         continue
@@ -43,7 +43,7 @@ class CreateData(db.DataBase):
                         break
         return self.periods
 
-    def _check_period(self, interval=0):
+    def _check_period(self, interval: int) -> bool:
         """Check if period is period, not anything else"""
 
         Flag = False
@@ -58,7 +58,7 @@ class CreateData(db.DataBase):
                 break
         return Flag
 
-    def create_data(self, interval, overall, mode):
+    def create_data(self, interval: int, overall: int, mode: int) -> tuple[list, list, int, int]:
         """Create data for create_graph bar"""
 
         if interval == 1:
@@ -72,28 +72,29 @@ class CreateData(db.DataBase):
         if overall == 1:
             format_data, overall_dif = self._overall_sum(format_data, interval)
 
-        legend_name, maxval, minval = self._legend_text(self.periods, format_data, interval, mode, overall, overall_dif)
+        legend_name, maxval, minval = self._legend_text(format_data, interval, mode, overall, overall_dif)
         return format_data, label, legend_name, maxval, minval
 
     @staticmethod
-    def _overall_sum(data, interval):
+    def _overall_sum(format_data: list, interval: int) -> tuple[list, list]:
         """Makes data overall by year/month/day"""
 
         overall_list = []
         overall_dif = []
-        for idx, values in enumerate(data):
+        for idx, values in enumerate(format_data):
             temp = []
             temp_dif = []
             if interval == 1:
                 if idx == 0:
                     overall_list.append(values)
-                    overall_dif.append(*values)
+                    overall_dif.append(values)
                 else:
                     if values[0] > 0:
-                        overall_list.append([overall_list[idx - 1][0] + data[idx][0]])
-                        overall_dif.append(*values)
+                        overall_list.append([round(overall_list[idx - 1][0] + format_data[idx][0], 2)])
+                        overall_dif.append(values)
                     else:
-                        overall_list.append(0)
+                        overall_list.append([0])
+                        overall_dif.append([0])
             else:
                 for index, value in enumerate(values):
                     if index == 0:
@@ -105,11 +106,12 @@ class CreateData(db.DataBase):
                             temp_dif.append(round(temp[index] - temp[index - 1], 2))
                         else:
                             temp.append(0)
+                            temp_dif.append(0)
                 overall_dif.append(temp_dif)
                 overall_list.append(temp)
         return overall_list, overall_dif
 
-    def _collect_years(self, mode):
+    def _collect_years(self, mode: int) -> tuple[list, list]:
         """Collects and formats data by years"""
 
         format_data = []
@@ -117,7 +119,7 @@ class CreateData(db.DataBase):
 
         for period in self.periods:
             temp = []
-            year = period[:4]
+            year = int(period)
             raw_data = self.cur.execute("""SELECT days.day, months.id, years.year, days.cash, days.cashless, days.purchases 
                                 FROM days 
                                 JOIN years 
@@ -132,13 +134,13 @@ class CreateData(db.DataBase):
                     if mode == 2:
                         prepare_data += purchases
                     else:
-                        prepare_data += round(cash + cashless, 2)
-            temp.append(prepare_data)
+                        prepare_data += cash + cashless
+            temp.append(round(prepare_data, 2))
             label.append(str(year))
             format_data.append(temp)
         return format_data, label
 
-    def _collect_months(self, mode):
+    def _collect_months(self, mode: int) -> tuple[list, list]:
         """Collects and formats data by months"""
 
         format_data = []
@@ -169,7 +171,7 @@ class CreateData(db.DataBase):
             format_data.append(temp)
         return format_data, label
 
-    def _collect_days(self, mode):
+    def _collect_days(self, mode: int) -> tuple[list, list]:
         """Collects and formats data by days"""
 
         format_data = []
@@ -209,22 +211,25 @@ class CreateData(db.DataBase):
         return format_data, label
 
     @staticmethod
-    def _average(data):
+    def _average(data: list, interval: int) -> float:
         """Return average profit or purchases to label"""
-        ctr = 0
-        allsum = 0
-        for value in data:
-            if value > 0:
-                allsum += value
-                ctr += 1
-        try:
-            avg = allsum / ctr
-        except ZeroDivisionError:
-            avg = 0
-        return round(avg, 2)
+        if interval == 1:
+            return round(sum(data) / 12, 2)
+        else:
+            ctr = 0
+            allsum = 0
+            for value in data:
+                if value > 0:
+                    allsum += value
+                    ctr += 1
+            try:
+                avg = allsum / ctr
+            except ZeroDivisionError:
+                avg = 0
+            return round(avg, 2)
     
-    def _max_min_value(self, format_data, periods, interval, mode):
-        """Finding max value in data"""
+    def _max_min_value(self, format_data: list, interval: int, mode: int) -> tuple[float, list, float, list]:
+        """Finding max and min value in data"""
 
         maxval = 1
         minval = round(sum(format_data[0]), 2)
@@ -251,7 +256,7 @@ class CreateData(db.DataBase):
                             best_period = datetime.date(year, month, day).strftime("%Y-%m-%d")
                         if minval >= purchases > 0:
                             minval = purchases
-                            worst_period = datetime.date(year, month, day).strftime("%Y-%mB-%d")
+                            worst_period = datetime.date(year, month, day).strftime("%Y-%m-%d")
                     else:
                         if maxval < cash + cashless:
                             maxval = round(cash + cashless, 2)
@@ -261,38 +266,33 @@ class CreateData(db.DataBase):
                             worst_period = datetime.date(year, month, day).strftime("%Y-%m-%d")
         else:
             for index, data in enumerate(format_data):
+                year = int(self.periods[index])
                 for value in data:
                     if maxval <= value:
                         maxval = round(value, 2)
-                        best_period = datetime.date(periods[index], data.index(maxval) + 1).strftime("%B-%Y") if interval == 2 else \
-                                      datetime.date(periods[index], 1, 1).strftime("%Y")
+                        best_period = datetime.date(year, data.index(value) + 1, 1).strftime("%B-%Y") if interval == 2 else \
+                                      datetime.date(year, 1, 1).strftime("%Y")
                     if minval >= value > 0:
                         minval = round(value, 2)
-                        worst_period = datetime.date(periods[index], data.index(minval) + 1).strftime("%B-%Y") if interval == 2 else \
-                                       datetime.date(periods[index], 1, 1).strftime("%Y")
+                        worst_period = datetime.date(year, data.index(value) + 1, 1).strftime("%B-%Y") if interval == 2 else \
+                                       datetime.date(year, 1, 1).strftime("%Y")
         return maxval, best_period, minval, worst_period
     
-    def _legend_text(self, periods, format_data, interval, mode, overall, overall_dif):
-        """Creates legend names for graph"""
+    def _legend_text(self, format_data: list, interval: int, mode: int, overall: int, overall_dif: list) -> tuple[list, float, float]:
+        """Creates legend text for graph"""
 
         maxval, minval = 0, 0
         legend_list = []
         average = []
 
-        for index, period in enumerate(periods):
-            if interval > 1:
-                if overall == 2:
-                    average.append(self._average(format_data[index]))
-                else:
-                    average.append(self._average(overall_dif[index]))
+        for index, period in enumerate(self.periods):
+            if overall == 1:
+                average.append(self._average(overall_dif[index], interval))
             else:
-                if overall == 2:
-                    average.append(sum(format_data[index]) / 12)
-                else:
-                    average.append(self._average(overall_dif[:index + 1]))
+                average.append(self._average(format_data[index], interval))
 
             if overall == 2:
-                maxval, best_period, minval, worst_period = self._max_min_value(format_data, periods, interval, mode)
+                maxval, best_period, minval, worst_period = self._max_min_value(format_data, interval, mode)
 
             if interval == 3:
                 legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
@@ -316,7 +316,7 @@ class CreateData(db.DataBase):
                                                         worst_period))
         return legend_list, maxval, minval
 
-    def _percent_change(self, first, second):
+    def _percent_change(self, first: float, second: float) -> str:
         """Return a percent value compare to first period"""
 
         if first < second:

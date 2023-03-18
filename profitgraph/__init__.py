@@ -7,7 +7,7 @@ def start_program():
     graph.select()
 
 __project__      = 'profitgraph'
-__version__      = '0.8.1'
+__version__      = '0.8.2'
 __keywords__     = ['profits', 'graphs', 'analytics']
 __author__       = 'Morjovski'
 __author_email__ = 'amor3ux@gmail.com'

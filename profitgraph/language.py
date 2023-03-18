@@ -8,7 +8,7 @@ green = colorama.Fore.GREEN
 color_reset = colorama.Fore.RESET
 
 
-def choose_language():
+def choose_language() -> str:
     while True:
         lang = input(f'\nChoose a language\nВыберите язык\nОберіть мову\n'
                      f'{yellow}EN{color_reset}/{yellow}RU{color_reset}/{yellow}UA{color_reset}: ')
@@ -160,8 +160,26 @@ purchases_title_lang = {
     "UA": "Кількість продажів за"    
 }
 
+annotation_day_lang = {
+    "EN": "Day",
+    "RU": "День",
+    "UA": "День"    
+}
+
+annotation_month_lang = {
+    "EN": "Month",
+    "RU": "Месяц",
+    "UA": "Місяць"    
+}
+
+annotation_year_lang = {
+    "EN": "Year",
+    "RU": "Год",
+    "UA": "Рік"    
+}
+
 hover_annotation_day_lang = {
-    "EN": "Day: ",
+    "EN": "Day:",
     "RU": "День:",
     "UA": "День:"    
 }

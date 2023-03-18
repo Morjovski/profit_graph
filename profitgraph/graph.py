@@ -8,7 +8,7 @@ from . import language as lg
 
 class Graph(CreateData):
 
-    def __init__(self, LANGUAGE):
+    def __init__(self, LANGUAGE: str) -> None:
         self.LANGUAGE = LANGUAGE
         super().__init__(LANGUAGE)
         self.colors = [plt.cm.tab10(i) for i in range(12)]
@@ -17,7 +17,7 @@ class Graph(CreateData):
         self.dir_path = os.path.dirname(__file__)
 
 
-    def create_graph_bar(self, format_data, label, legend_name, interval, periods, mode, maxval, minval, overall):
+    def create_graph_bar(self, format_data: list, label: list, legend_name: list, interval: int, periods, mode: int, maxval: float, minval: float, overall: int) -> None:
         """Compare two periods by grouped bar chart style"""
         
         fig, ax = plt.subplots()
@@ -28,7 +28,14 @@ class Graph(CreateData):
 
         for i, values in enumerate(format_data):
             x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
-            if interval != 1:
+            if interval == 1:
+                ax.bar(i, values, label=label[i], width=bar_width * 0.9, color=self.colors[i])
+                if overall == 2:
+                    if values[0] == maxval:
+                        legend_max_color = self.colors[i]
+                    if values[0] == minval:
+                        legend_min_color = self.colors[i]
+            else:
                 for x, y in enumerate(values):
                     ax.bar(x + x_offset, y, label=label[x], width=bar_width * 0.9, color=self.colors[i])
                     if overall == 2:
@@ -36,16 +43,9 @@ class Graph(CreateData):
                             legend_max_color = self.colors[i]
                         if y == minval:
                             legend_min_color = self.colors[i]
-            else:
-                ax.bar(i, values, label=label[i], width=bar_width * 0.9, color=self.colors[i])
-                if overall == 2:
-                    if values[0] == maxval:
-                        legend_max_color = self.colors[i]
-                    if values[0] == minval:
-                        legend_min_color = self.colors[i]
 
         # For add min/max legend
-        if interval == 1:
+        if interval == 1 and overall == 2:
             for i in range(2):
                 plt.bar(i, 0, color='none')
 
@@ -55,7 +55,16 @@ class Graph(CreateData):
         else:
             ax.set_title(f"{lg.profit_title_lang[self.LANGUAGE]} {', '.join(periods)}")
             ax.set_ylabel(lg.profit_label_lang[self.LANGUAGE])
-        ax.set_xlabel(lg.hover_annotation_day_lang[self.LANGUAGE])
+
+        if interval == 1:
+            date = lg.hover_annotation_year_lang[self.LANGUAGE]
+            ax.set_xlabel(lg.annotation_year_lang[self.LANGUAGE])
+        elif interval == 2:
+            date = lg.hover_annotation_month_lang[self.LANGUAGE]
+            ax.set_xlabel(lg.annotation_month_lang[self.LANGUAGE])
+        else:
+            date = lg.hover_annotation_day_lang[self.LANGUAGE]
+            ax.set_xlabel(lg.annotation_day_lang[self.LANGUAGE])
 
         plt.xticks(range(len(label)), label)
 
@@ -65,19 +74,12 @@ class Graph(CreateData):
         for i, j in enumerate(leg.legendHandles):
             j.set_color(self.colors[i])
 
-        # To set min max color exactly the same as min max period
+        # To set min/max color exactly the same as min/max period
         if overall == 2:
             leg.legendHandles[-2].set_color(legend_max_color)
             leg.legendHandles[-1].set_color(legend_min_color)
 
         fig.tight_layout()
-
-        if interval == 1:
-            date = lg.hover_annotation_year_lang[self.LANGUAGE]
-        elif interval == 2:
-            date = lg.hover_annotation_month_lang[self.LANGUAGE]
-        else:
-            date = lg.hover_annotation_day_lang[self.LANGUAGE]
 
         # Hover to show bar values
         cursor = mplcursors.cursor()

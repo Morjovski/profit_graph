@@ -8,13 +8,13 @@ from . import db
 
 class AddData(db.DataBase):
     
-    def __init__(self, LANGUAGE):
+    def __init__(self, LANGUAGE: str) -> None:
         self.LANGUAGE = LANGUAGE
         super().__init__(self.LANGUAGE)
         self.Flag = False
         colorama.init()
 
-    def add_data(self):
+    def add_data(self) -> None:
         """Used for adding a new data in SQLite database"""
         
         self.connect()
@@ -45,7 +45,7 @@ class AddData(db.DataBase):
                 self.close()
                 break
 
-    def _create_answer(self):
+    def _create_answer(self) -> list:
         """Collect necessary data"""
 
         self.Flag = False
