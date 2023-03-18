@@ -36,9 +36,9 @@ startgraph
 
 ## Examples
 
-![Sales by days](https://i.imgur.com/1icI15u.png)
-![Profit by years](https://i.imgur.com/Efg9KAc.png)
-![Profit by months](https://i.imgur.com/44Lp93I.png)
+![Overall profit by days](https://i.imgur.com/VTjizD7.png)
+![Profit by years](https://i.imgur.com/Pcv2Een.png)
+![Sales by months](https://i.imgur.com/M8uenjz.png)
 
 ## License
 
