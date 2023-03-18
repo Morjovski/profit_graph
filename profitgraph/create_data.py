@@ -58,7 +58,7 @@ class CreateData(db.DataBase):
                 break
         return Flag
 
-    def create_data(self, interval: int, overall: int, mode: int) -> tuple[list, list, int, int]:
+    def create_data(self, interval: int, overall: int, mode: int) -> tuple[list, list, list, float, float]:
         """Create data for create_graph bar"""
 
         if interval == 1:
@@ -325,3 +325,9 @@ class CreateData(db.DataBase):
             return f"\n({str(round(((second - first) / first) * 100, 2))}% {lg.compare_to_first_period_lang[self.LANGUAGE]})"
         else:
             return ''
+
+    def _color_schema(self, cm, length):
+        if length <= 8:
+            return [cm.tab10(i) for i in range(length + 2)]
+        else:
+            return [cm.tab20(i) for i in range(length + 2)]

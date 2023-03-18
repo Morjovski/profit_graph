@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import mplcursors
 import os
+import numpy as np
 
 from .create_data import CreateData
 from . import language as lg
@@ -11,38 +12,38 @@ class Graph(CreateData):
     def __init__(self, LANGUAGE: str) -> None:
         self.LANGUAGE = LANGUAGE
         super().__init__(LANGUAGE)
-        self.colors = [plt.cm.tab10(i) for i in range(12)]
         plt.style.use('_mpl-gallery')
         plt.rcParams["figure.autolayout"] = True
         self.dir_path = os.path.dirname(__file__)
 
 
-    def create_graph_bar(self, format_data: list, label: list, legend_name: list, interval: int, periods, mode: int, maxval: float, minval: float, overall: int) -> None:
+    def create_graph_bar(self, format_data: list, label: list, legend_name: list, interval: int, periods: list, mode: int, maxval: float, minval: float, overall: int) -> None:
         """Compare two periods by grouped bar chart style"""
-        
+
+        colors = self._color_schema(plt.cm, len(periods))
         fig, ax = plt.subplots()
         fig.set_size_inches(20, 10)
-        n_bars = len(format_data)
-        total_width = 0.8
-        bar_width = total_width / n_bars
 
+        n_bars = len(format_data)
+        total_width = 0.85
+        bar_width = total_width / n_bars
         for i, values in enumerate(format_data):
-            x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
             if interval == 1:
-                ax.bar(i, values, label=label[i], width=bar_width * 0.9, color=self.colors[i])
+                ax.bar(i, values, label=label[i], width=total_width, color=colors[i])
                 if overall == 2:
                     if values[0] == maxval:
-                        legend_max_color = self.colors[i]
+                        legend_max_color = colors[i]
                     if values[0] == minval:
-                        legend_min_color = self.colors[i]
+                        legend_min_color = colors[i]
             else:
+                x_offset = (i - n_bars / 2) * bar_width + bar_width / 2
                 for x, y in enumerate(values):
-                    ax.bar(x + x_offset, y, label=label[x], width=bar_width * 0.9, color=self.colors[i])
+                    ax.bar(x + x_offset, y, label=label[x], width=bar_width * 1, color=colors[i])
                     if overall == 2:
                         if y == maxval:
-                            legend_max_color = self.colors[i]
+                            legend_max_color = colors[i]
                         if y == minval:
-                            legend_min_color = self.colors[i]
+                            legend_min_color = colors[i]
 
         # For add min/max legend
         if interval == 1 and overall == 2:
@@ -59,6 +60,7 @@ class Graph(CreateData):
         if interval == 1:
             date = lg.hover_annotation_year_lang[self.LANGUAGE]
             ax.set_xlabel(lg.annotation_year_lang[self.LANGUAGE])
+            plt.yticks(np.arange(0, maxval + minval, step=int(round(maxval, -len(str(int(maxval))) + 1) // 10)))
         elif interval == 2:
             date = lg.hover_annotation_month_lang[self.LANGUAGE]
             ax.set_xlabel(lg.annotation_month_lang[self.LANGUAGE])
@@ -72,7 +74,7 @@ class Graph(CreateData):
 
         # Create a legend color
         for i, j in enumerate(leg.legendHandles):
-            j.set_color(self.colors[i])
+            j.set_color(colors[i])
 
         # To set min/max color exactly the same as min/max period
         if overall == 2:

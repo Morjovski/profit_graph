@@ -35,7 +35,7 @@ class AddData(db.DataBase):
                 sleep(1)
                 continue
             else:
-                self.insert_day(day, month, cash, cashless, purchases, year)
+                self.insert_day(day, month, cash, cashless, purchases)
                 print(lg.success_add_data_lang[self.LANGUAGE])
             self.commit()
             quit_add_data = input(lg.quit_add_data_lang[self.LANGUAGE])

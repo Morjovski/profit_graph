@@ -28,7 +28,7 @@ class RandomData(db.DataBase):
                     purchases = randint(0, 500)
                     self.insert_year(intyear)
                     self.insert_month(intmonth)
-                    self.insert_day(day, intmonth, cash, cashless, purchases, intyear)
+                    self.insert_day(day, intmonth, cash, cashless, purchases)
             self.commit()
         self.close()
         print(lg.success_random_data_lang[self.LANGUAGE])

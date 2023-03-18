@@ -13,6 +13,7 @@ class DataBase:
     def connect(self) -> None:
         """Connects to the database file"""
 
+        os.makedirs(os.path.dirname(__file__) + "\\Database", exist_ok=True)
         self.conn = sqlite3.connect(os.path.dirname(__file__) + "\\Database\\entries.sqlite")
         self.cur = self.conn.cursor()
 
@@ -82,7 +83,11 @@ class DataBase:
         """Takes last period from DB to show it while add data"""
 
         id = self.cur.execute("SELECT id FROM days ORDER BY id DESC LIMIT 1").fetchone()
-        period = self.cur.execute("SELECT days.day, days.month_id, years.year FROM days JOIN years WHERE days.id = ?", id).fetchone()
+        period = self.cur.execute("""SELECT days.day, days.month_id, years.year 
+                                     FROM days 
+                                     JOIN years 
+                                     WHERE days.id = (?) 
+                                     ORDER BY years.year DESC LIMIT 1""", id).fetchone()
         period = '-'.join([str(i) for i in period])
         return period
 

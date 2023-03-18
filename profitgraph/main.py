@@ -34,11 +34,21 @@ class Mode:
                     db_path = self.dir_path + '\\Database\\entries.sqlite'
                     os.remove(db_path)
                     print(lg.success_db_delete_lang[self.LANGUAGE])
+                    sleep(2)
                     continue
                 except FileNotFoundError:
                     print(lg.no_file_data_lang[self.LANGUAGE])
+                    sleep(2)
                     os.makedirs(self.dir_path + "\\Database", exist_ok=True)
-                    self.ad.add_data()
+                    random_data = input(lg.create_file_random_lang[self.LANGUAGE])
+                    if random_data.lower() == 'random':
+                        self.random.randomize()
+                    else:
+                        self.ad.add_data()
+                except PermissionError:
+                    print(lg.db_permission_error_lang[self.LANGUAGE])
+                    sleep(2)
+                    continue
             elif n.lower() == 'quit':
                 print(lg.exit_program_lang[self.LANGUAGE])
                 sleep(1.5)

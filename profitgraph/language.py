@@ -118,6 +118,12 @@ create_file_random_lang = {
     "UA": f"\nВведіть '{yellow}random{color_reset}' для генерації довільних даних: "    
 }
 
+create_file_random_lang = {
+    "EN": f"\nEnter '{yellow}random{color_reset}' for generate random data: ",
+    "RU": f"\nВведите '{yellow}random{color_reset}' для генерации случайных данных: ",
+    "UA": f"\nВведіть '{yellow}random{color_reset}' для генерації довільних даних: "
+}
+
 leave_empty_lang = {
     "EN": f"{yellow}Leave blank empty{color_reset} if the date is today!",
     "RU": f"{yellow}Оставьте пустым{color_reset} если дата текущая!",
@@ -362,4 +368,10 @@ delete_db_lang = {
     "EN": f"Enter '{yellow}delete{color_reset}' to delete a database file!",
     "RU": f"Введите '{yellow}delete{color_reset}' для удаления файла базы данных!",
     "UA": f"Введіть '{yellow}delete{color_reset}' для видалення файла бази даних!"
+}
+
+db_permission_error_lang = {
+    "EN": f"\n{red}Can't close database file{color_reset}! Close the file before delete (Probably the db file is open in another program)",
+    "RU": f"\n{red}Не удается удалить файл базы данных{color_reset}! Возможно, он открыт в другой программе.",
+    "UA": f"\n{red}Не вдалося видалити файл бази даних{color_reset}! Можливо, що він відкрит у іншій програмі."
 }
