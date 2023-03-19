@@ -2,3 +2,4 @@ matplotlib~=3.6.2
 mplcursors~=0.5.2
 tqdm~=4.64.1
 colorama~=0.4.6
+numpy==1.23.4
