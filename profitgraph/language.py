@@ -375,3 +375,9 @@ db_permission_error_lang = {
     "RU": f"\n{red}Не удается удалить файл базы данных{color_reset}! Возможно, он открыт в другой программе.",
     "UA": f"\n{red}Не вдалося видалити файл бази даних{color_reset}! Можливо, що він відкрит у іншій програмі."
 }
+
+enter_random_lang = {
+    "EN": f"Enter '{yellow}random{color_reset}' to generate random data!",
+    "RU": f"Введите '{yellow}random{color_reset}' для генерации случайных значений!",
+    "UA": f"Введіть '{yellow}random{color_reset}' для створення випадкових значень!"
+}
