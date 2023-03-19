@@ -26,6 +26,7 @@ class Mode:
         while True:
             print(lg.quit_program_lang[self.LANGUAGE])
             print(lg.delete_db_lang[self.LANGUAGE])
+            print(lg.enter_random_lang[self.LANGUAGE])
             n = input(f'{lg.input_mode_lang[self.LANGUAGE]}')
             if n.lower() == 'random':
                 self.random.randomize()
