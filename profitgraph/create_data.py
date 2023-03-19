@@ -281,7 +281,6 @@ class CreateData(db.DataBase):
     def _legend_text(self, format_data: list, interval: int, mode: int, overall: int, overall_dif: list) -> tuple[list, float, float]:
         """Creates legend text for graph"""
 
-        maxval, minval = 0, 0
         legend_list = []
         average = []
 
@@ -291,8 +290,7 @@ class CreateData(db.DataBase):
             else:
                 average.append(self._average(format_data[index], interval))
 
-            if overall == 2:
-                maxval, best_period, minval, worst_period = self._max_min_value(format_data, interval, mode)
+            maxval, best_period, minval, worst_period = self._max_min_value(format_data, interval, mode)
 
             if interval == 3:
                 legend = f"{datetime.date(int(period[:4]), int(period[5:7]), 1).strftime('%B %Y')}, " \
