@@ -1,5 +1,6 @@
 from random import randint
 from tqdm import tqdm
+import datetime
 
 from . import db
 from . import language as lg
@@ -28,6 +29,10 @@ class RandomData(db.DataBase):
                     purchases = randint(0, 500)
                     self.insert_year(intyear)
                     self.insert_month(intmonth)
+                    try:
+                        datetime.date(intyear, intmonth, intday)
+                    except ValueError:
+                        continue
                     self.insert_day(day, intmonth, cash, cashless, purchases)
             self.commit()
         self.close()
