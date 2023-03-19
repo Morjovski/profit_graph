@@ -23,11 +23,13 @@ class Graph(CreateData):
         colors = self._color_schema(plt.cm, len(periods))
         fig, ax = plt.subplots()
         fig.set_size_inches(20, 10)
-
+        biggestval = 0
         n_bars = len(format_data)
         total_width = 0.85
         bar_width = total_width / n_bars
         for i, values in enumerate(format_data):
+            if biggestval < max(values):
+                biggestval = max(values)
             if interval == 1:
                 ax.bar(i, values, label=label[i], width=total_width, color=colors[i])
                 if overall == 2:
@@ -45,7 +47,7 @@ class Graph(CreateData):
                         if y == minval:
                             legend_min_color = colors[i]
 
-        # For add min/max legend
+        # Creates an empty bars for min/max legend
         if interval == 1 and overall == 2:
             for i in range(2):
                 plt.bar(i, 0, color='none')
@@ -60,7 +62,6 @@ class Graph(CreateData):
         if interval == 1:
             date = lg.hover_annotation_year_lang[self.LANGUAGE]
             ax.set_xlabel(lg.annotation_year_lang[self.LANGUAGE])
-            plt.yticks(np.arange(0, maxval + minval, step=int(round(maxval, -len(str(int(maxval))) + 1) // 10)))
         elif interval == 2:
             date = lg.hover_annotation_month_lang[self.LANGUAGE]
             ax.set_xlabel(lg.annotation_month_lang[self.LANGUAGE])
@@ -68,8 +69,9 @@ class Graph(CreateData):
             date = lg.hover_annotation_day_lang[self.LANGUAGE]
             ax.set_xlabel(lg.annotation_day_lang[self.LANGUAGE])
 
+        round_count = -len(str(int(biggestval)))
+        plt.yticks(np.arange(0, round(int(biggestval / 0.7), round_count + 2), step=int(round(biggestval, round_count + 1) // 10)))
         plt.xticks(range(len(label)), label)
-
         leg = plt.legend(legend_name, loc='center left', bbox_to_anchor=(1, 0.5))
 
         # Create a legend color
@@ -85,7 +87,6 @@ class Graph(CreateData):
 
         # Hover to show bar values
         cursor = mplcursors.cursor()
-
         @cursor.connect("add")
         def on_add(sel):
             x, y, width, height = sel.artist[sel.index].get_bbox().bounds
